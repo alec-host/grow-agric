@@ -1,0 +1,27 @@
+.bmmNWL,.lazFrc {
+    z-index: 100;
+    position: fixed;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    top: 0;
+    right: 0px;
+    box-shadow: 0 3px 6px #C0C0CA;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-transition: all 500ms;
+    transition: all 500ms;
+    background: #fff;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 500px;
+    background-color: #599c1b;
+    width: 400px;
+    color: #fff;
+    class-name: admin-bro_Drawer admin-bro_Drawer_Filter;
+}

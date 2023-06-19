@@ -44,7 +44,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         age:{
             type: DataTypes.INTEGER,
-            allowNull: true,
+            allowNull: false,
             defaultValue: 0            
         },
         level_of_education:{
@@ -57,7 +57,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         year_of_experience:{
             type: DataTypes.INTEGER,
-            allowNull: true, 
+            allowNull: false, 
             defaultValue: 0           
         },
         home_county:{
@@ -85,18 +85,18 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: DataTypes.NOW    
         },
         is_verified:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
+            type: DataTypes.TINYINT,
+            allowNull: false,
             defaultValue: 0            
         },        
         is_active:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
+            type: DataTypes.TINYINT,
+            allowNull: false,
             defaultValue: 1            
         },
         is_deleted:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
+            type: DataTypes.TINYINT,
+            allowNull: false,
             defaultValue: 0
         }           
     },

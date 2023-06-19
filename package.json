@@ -13,13 +13,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@admin-bro/express": "^3.1.0",
+    "@admin-bro/sequelize": "^1.2.1",
+    "admin-bro": "^4.0.1",
     "amqplib": "^0.10.3",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "form-data": "^4.0.0",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
@@ -28,7 +34,8 @@
     "otp-gen-agent": "^1.1.2",
     "sequelize": "^6.32.0",
     "swagger-autogen": "^2.23.1",
-    "swagger-ui-express": "^4.6.3"
+    "swagger-ui-express": "^4.6.3",
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
