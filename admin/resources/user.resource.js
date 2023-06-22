@@ -3,17 +3,17 @@ const db = require("../../app/models");
 const User = db.users;
 
 const usersNavigation = {
-    name: 'Farmer Information',
+    name: 'Farmer Info',
     icon: 'User',
 };
 
 const UserResource = {
     resource: User,
     options: {
-        listProperties: ['farmer_uuid','first_name','last_name','gender','age','id_number','phone_number','email','is_married','level_of_education','year_of_experience','createdAt'],
-        filterProperties: ['first_name','last_name','gender','age','id_number','phone_number','email','is_married','level_of_education','year_of_experience'],
+        listProperties: ['first_name','last_name','gender','age','id_number','phone_number','email','is_married','level_of_education','year_of_experience','financial_sponsor','createdAt'],
+        filterProperties: ['first_name','last_name','gender','age','id_number','phone_number','email','is_married','level_of_education','year_of_experience','financial_sponsor'],
         editProperties: [],
-        showProperties: ['farmer_uuid','first_name','last_name','gender','age','id_number','phone_number','email','is_married','level_of_education','year_of_experience','createdAt'],
+        showProperties: ['first_name','last_name','gender','age','id_number','phone_number','email','is_married','level_of_education','year_of_experience','financial_sponsor','createdAt'],
         parent: usersNavigation,
         actions: {
             delete:{
@@ -31,7 +31,7 @@ const UserResource = {
             bulkDelete:{
                 isAccessible: false,
                 isVisible: false,                        
-            }, 
+            },
         }, 
     },
     sort: {

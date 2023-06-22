@@ -3,18 +3,18 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize, Sequelize) => {
     
-    const FinanceFeeds = sequelize.define("finance_application_feeds", {
+    const PreferredFeeds = sequelize.define("preferred_feeds", {
         _id:{
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },   
-        application_id:{
+        farmer_id:{
             type: DataTypes.INTEGER,
             foreignKey: true 
         },
-        application_uuid:{
+        farmer_uuid:{
             type: DataTypes.STRING(65),
             allowNull: true,
         }, 
@@ -37,11 +37,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
         indexes: [{
-            name: 'idx_fin_feed',
+            name: 'idx_preferred_feed',
             unique: false,
-            fields : ['application_id','application_uuid'] 
+            fields : ['farmer_id','farmer_uuid'] 
         }]
     });
 
-    return FinanceFeeds;
+    return PreferredFeeds;
 };

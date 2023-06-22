@@ -15,16 +15,17 @@ module.exports = (sequelize, Sequelize) => {
             foreignKey: true
         },
         farmer_uuid: {
-            type: DataTypes.STRING(45),
-            allowNull: false            
+            type: DataTypes.STRING(65),
+            allowNull: true,
+            Comment: "Unormalize: column added to avoid use of joins."           
         },       
         challenges_faced: {
             type: DataTypes.STRING(65),
-            allowNull: false            
+            allowNull: true            
         },
         other_challenges: {
             type: DataTypes.STRING(45),
-            allowNull: false            
+            allowNull: true            
         },
         is_deleted: {
             type: DataTypes.INTEGER,
@@ -38,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
         indexes: [{
             name: 'idx_farm_challenges',
             unique: false,
-            fields : ['farm_id','is_deleted'] 
+            fields : ['farm_id','farmer_uuid','is_deleted'] 
         }]
     });
 

@@ -64,6 +64,10 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.STRING(40),
             allowNull: true           
         },
+        financial_sponsor:{
+            type: DataTypes.STRING(30),
+            allowNull: true,
+        },       
         password:{
             type: DataTypes.STRING(65),
             allowNull: true

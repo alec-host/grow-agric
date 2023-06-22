@@ -4,10 +4,9 @@ const db = require("../../app/models");
 const Farm = db.farms;
 
 const farmsNavigation = {
-    name: 'Farm Information',
+    name: 'Farm Info',
     icon: 'Building',
 };
-
 
 const FarmResource = {
     resource: Farm,

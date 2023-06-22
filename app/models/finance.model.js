@@ -16,8 +16,8 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false 
         },
         application_status:{
-            type: DataTypes.ENUM("APPROVED","DECLINED","PENDING"),
-            defaultValue: "PENDING"  
+            type: DataTypes.ENUM("PENDING REVIEW","IN REVIEW","FINALIZING","PO COMPLETED","LOAN APPROVED","FARMING ABOUT TO START","FARMING STARTS"),
+            defaultValue: "PENDING REVIEW"  
         },
         farmer_id:{
             type: DataTypes.INTEGER,
@@ -25,27 +25,29 @@ module.exports = (sequelize, Sequelize) => {
         },      
         applicant_name:{
             type: DataTypes.STRING(85),
-            allowNull: false            
+            allowNull: false,
+            Comment: "Unormalize: column added to avoid use of joins."     
         },
         phone_number:{
             type: DataTypes.STRING(15),
             allowNull: true,
+            Comment: "Unormalize: column added to avoid use of joins." 
         },
+        farmer_uuid:{
+            type: DataTypes.STRING(65),
+            allowNull: false,
+            Comment: "Unormalize: column added to avoid use of joins."     
+        },        
         loan_amount: {
             type: Sequelize.INTEGER,
             foreignKey: true
         },
-        bird_capacity: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultValue: 0
-        },       
+        financial_sponsor:{
+            type: DataTypes.STRING(30),
+            allowNull: true,
+            Comment: "Unormalize: column added to avoid use of joins." 
+        },      
         current_production:{
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0            
-        },
-        mortality_rate:{
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0            
@@ -102,7 +104,7 @@ module.exports = (sequelize, Sequelize) => {
         indexes: [{
             name: 'idx_fin',
             unique: false,
-            fields : ['application_uuid','phone_number','is_archived'] 
+            fields : ['application_uuid','phone_number','farmer_uuid','is_archived'] 
         }]
     });
 

@@ -29,7 +29,7 @@ const sequelize = new Sequelize(
   db.userotp = require("./user.otp.model")(sequelize, Sequelize);
   db.finances = require("./finance.model")(sequelize,Sequelize);
   db.financeextras = require("./finance.extra.model")(sequelize,Sequelize);
-  db.financefeeds = require("./finance.feeds.model")(sequelize,Sequelize);
+  db.preferredfeeds = require("./preferred.feeds.model")(sequelize,Sequelize);
   db.sales = require("./sales.model")(sequelize,Sequelize);
 
   //-.relationship btwn users & extras.
@@ -47,9 +47,9 @@ const sequelize = new Sequelize(
   //-.relationship btwn finances & extras.
   db.finances.hasOne(db.financeextras,{foreignKey:"application_id",sourceKey:"_id"});
   db.financeextras.belongsTo(db.finances,{foreignKey:"application_id",sourceKey:"_id"});
-  //-.relationship btwn finance & feeds.
-  db.finances.hasOne(db.financefeeds,{foreignKey:"application_id",sourceKey:"_id"});
-  db.financefeeds.belongsTo(db.finances,{foreignKey:"application_id",sourceKey:"_id"});
+  //-.relationship btwn users & feeds.
+  db.users.hasOne(db.preferredfeeds,{foreignKey:"farmer_id",sourceKey:"_id"});
+  db.preferredfeeds.belongsTo(db.users,{foreignKey:"farmer_id",sourceKey:"_id"});
   //-.relationship btwn users & sales.
   db.users.hasMany(db.sales,{foreignKey:"farmer_id",sourceKey:"_id"});
   db.sales.belongsTo(db.users,{foreignKey:"farmer_id",sourceKey:"_id"});

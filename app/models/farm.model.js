@@ -13,12 +13,17 @@ module.exports = (sequelize, Sequelize) => {
         farm_uuid:{
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-            allowNull: false 
+            allowNull: false
         },
         farmer_id: {
             type: Sequelize.INTEGER,
-            foreignKey: true
-        },        
+            foreignKey: true,
+        },
+        farmer_uuid:{
+            type: DataTypes.STRING(65),
+            allowNull: true,
+            Comment: 'Unnormalize added column - avoid table join',        
+        },    
         county:{
             type: DataTypes.STRING(45),
             allowNull: false            
@@ -36,6 +41,16 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: 0            
         },
+        bird_capacity: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        mortality_rate:{
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0            
+        },
         item_farmed:{
             type: DataTypes.STRING(25),
             allowNull: false           
@@ -47,7 +62,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         insurer:{
             type: DataTypes.STRING(30),
-            allowNull: false,            
+            allowNull: null,            
         },
         createdAt:{
             field:'date_created',
@@ -71,7 +86,7 @@ module.exports = (sequelize, Sequelize) => {
         indexes: [{
             name: 'idx_farm',
             unique: false,
-            fields : ['farm_uuid','county','farmer_id','is_insured','is_deleted'] 
+            fields : ['farm_uuid','county','farmer_id','farmer_uuid','is_insured','is_deleted'] 
         }]
     });
 

@@ -8,20 +8,20 @@ const financesNavigation = {
     icon: 'Finance',
 };
 
-const FinanceResource = {
+const FinanceApprovedResource = {
     resource: Finance,
     options:{
-        id:'PendingApplications',
+        id:'FinanceFilteredByInReviewStatus',
         href: ({ h, resource }) => {
             return h.resourceActionUrl({
                 resourceId: resource.decorate().id(),
-                actionName: 'list?filters.application_status=PENDING',
+                actionName: 'list?filters.application_status=IN REVIEW&step=1',
             })
-        },
-        listProperties: ['application_uuid','applicant_name','phone_number','loan_amount','bird_capacity','projected_sales','application_status','date_required'],
-        filterProperties: ['applicant_name','phone_number','loan_amount','bird_capacity','projected_sales','application_status','date_required'],
+        },        
+        listProperties: ['applicant_name','phone_number','loan_amount','projected_sales','financial_sponsor','application_status','date_required'],
+        filterProperties: ['applicant_name','phone_number','loan_amount','financial_sponsor','application_status','date_required'],
         editProperties: [],
-        showProperties: ['application_uuid','applicant_name','phone_number','loan_amount','bird_capacity','projected_sales','application_status','date_required'],
+        showProperties: ['applicant_name','phone_number','loan_amount','projected_sales','financial_sponsor','application_status','date_required'],
         parent: financesNavigation,
         actions:{
             delete:{
@@ -29,7 +29,7 @@ const FinanceResource = {
                 isVisible: false,                        
             },
             edit:{
-                isAccessible: true,
+                isAccessible: false,
                 isVisible: false,
             },
             new:{
@@ -40,11 +40,7 @@ const FinanceResource = {
                 isAccessible: false,
                 isVisible: false,                        
             },
-            list: {             
-                isAccessible: true,
-                isVisible: true,             
-            },             
-            ApplicantReview: {
+            Review: {
                 actionType: 'record',
                 icon: 'Money',
                 handler: async(request, response, context) => {
@@ -55,7 +51,7 @@ const FinanceResource = {
                     }
                 },
                 component: AdminBro.bundle("../components/finance-review-component.tsx"),
-            },           
+            },                                 
         },
     },
     sort:{
@@ -64,4 +60,4 @@ const FinanceResource = {
     },
 };
 
-module.exports=FinanceResource;
+module.exports=FinanceApprovedResource;
