@@ -13,6 +13,7 @@ const Op = db.Sequelize.Op;
 
 const getPagination = require("./utility/pagination");
 const getPagingData = require("./utility/page.data");
+const { getAccountVerifiedCountByPhoneNumber } = require("./utility/common.controller");
 
 let refreshTokens = [];
 
@@ -36,10 +37,11 @@ exports.registerUser = async(req,res) => {
                     //-.record some data.
                     await createUserExtra({farmer_id:newUser[1].toJSON()._id,farmer_uuid:newUser[1].toJSON().farmer_uuid});
                     await createUserOtp(createPayload);
+                    const {phone_number,farmer_uuid,first_name,last_name,id_number,email,home_county,gender,age,is_married,level_of_education} = newUser[1];
                     return res.status(201).json({
                         success: true,
                         error: false,
-                        message: newUser[1]
+                        message: {phone_number,farmer_uuid,first_name,last_name,id_number,email,home_county,gender,age,is_married,level_of_education}
                     });                   
                 }else{
                     return res.status(400).json({
@@ -184,17 +186,31 @@ exports.modifyUser = async(req,res) => {
     const user_uuid = req.params ? req.params.reference_id : "";
     if(Object.keys(req.body).length !== 0) {
         const {email} = req.body;
+        console.log("zip zap "+email);
+        console.log(req.body);
         const user = await findUserByUUID(user_uuid);
         if(user){ 
             emailValidatationStatus = await validateUserEmail(email);
             if(emailValidatationStatus){
-                const isModified = await modifyUserDataByUUID(user_uuid,req.body);
-                if(isModified)
+                const mUser = await modifyUserDataByUUID(user_uuid,req.body);
+                if(mUser)
                 {
-                    res.status(200).json({
-                        success: true,
-                        error: false,
-                        message: "User information has been updated."
+                    Users.findOne({
+                        where: {
+                            farmer_uuid:user_uuid
+                        },
+                        attributes: ['first_name','last_name',
+                                    'farmer_uuid','phone_number',
+                                    'gender','id_number',
+                                    'age','is_married','level_of_education',
+                                    'year_of_experience','home_county',
+                                    'phone_number','email'],
+                    }).then(data => {
+                        res.status(200).json({
+                            success: true,
+                            error: false,
+                            message: data
+                        });
                     });
                 }else{
                     res.status(500).json({
@@ -328,6 +344,66 @@ exports.token = async(req,res) => {
     }
 };
 
+exports.accountStatus = async(req,res) => {
+    const phoneNumber = req.params ? req.params.phoneNumber : null;
+    if(phoneNumber){
+        const user = await findUserByPhoneNumber(phoneNumber);
+        if(user){
+            let count = await getAccountVerifiedCountByPhoneNumber(phoneNumber); 
+            return res.status(200).json({
+                success: true,
+                error: false,
+                message: ""+count
+            });
+        }else{
+            return res.status(404).json({
+                success: false,
+                error: true,
+                message: "User with phone: "+ phoneNumber +" not found."
+            });            
+        }       
+    }else{
+        res.status(500).json({
+            success: false,
+            error: true,
+            message: "Missing: request params not provided."
+        });  
+    }   
+};
+
+exports.getUserProfile = async(req,res) => {
+    const phoneNumber = req.params ? req.params.phoneNumber : null;
+    if(phoneNumber){
+        Users.findOne({
+            where: {
+                phone_number: phoneNumber
+            },
+            attributes: ['first_name','last_name',
+                        'farmer_uuid','phone_number',
+                        'gender','id_number',
+                        'age','is_married','level_of_education',
+                        'year_of_experience','home_county',
+                        'phone_number','email'],
+        }).then(data => {
+            if(data != null){
+                res.status(200).json({success:true,error:false,message:data});
+            }else{
+                res.status(404).json({
+                    success: false,
+                    error: true,
+                    message: "User with id: "+ phoneNumber +" not found."
+                }); 
+            }
+        });
+    }else{
+        res.status(500).json({
+            success: false,
+            error: true,
+            message: "Missing: request params not provided."
+        });  
+    }
+};
+
 const createUser = async(payload) => {
     const newUser = await Users.create(payload);
     if(!newUser) {
@@ -410,37 +486,11 @@ const getUserOtpGenerated = async(phoneNumber) => {
 
 const deleteOtp = async(phoneNumber) => {
     const user = UserOtp.destroy({where:{phone_number:phoneNumber,is_deleted:0}}).catch(e => { return false; });
-    console.log("giraffe on code "+user);
 };
 
 const validateUserEmail = async(email) => {
     const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return emailRegexp.test(email);
-};
-
-exports.findOne = async(req,res) => {
-    const user_uuid = req.params.reference_id;
-    Users.findOne({
-        where: {
-            farmer_uuid: user_uuid
-        },
-        attributes: ['first_name','last_name',
-                    'gender','id_number',
-                    'age',['is_married','married'],
-                    ['level_of_education','highest_education'],
-                    'year_of_experience',['home_county','county'],
-                    'phone_number','email'],
-    }).then(data => {
-        if(data != null){
-            res.status(200).json(data);
-        } else {
-            res.status(404).json({
-                success: false,
-                error: true,
-                message: "User with id: "+ user_uuid +" not found."
-            }); 
-        }
-    }); 
 };
 
 exports.findAll = async(req,res) => {
@@ -509,10 +559,6 @@ exports.findAndCountAll = async(req,res) => {
             message: err.message +" "+"Something wrong happened while retrieving users info."
         });
     });
-};
-
-exports.delete = async(req,res) => {
-
 };
 
 exports.welcome = async(req,res) => {

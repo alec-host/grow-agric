@@ -9,5 +9,9 @@ import Component4 from '../admin/components/finance-review-component'
 AdminBro.UserComponents.Component4 = Component4
 import Component5 from '../admin/components/sale-update-component'
 AdminBro.UserComponents.Component5 = Component5
-import Component6 from '../admin/components/finance-review-component'
+import Component6 from '../admin/components/create-portal-user-component'
 AdminBro.UserComponents.Component6 = Component6
+import Component7 from '../admin/components/profile-component'
+AdminBro.UserComponents.Component7 = Component7
+import Component8 from '../admin/components/finance-review-component'
+AdminBro.UserComponents.Component8 = Component8

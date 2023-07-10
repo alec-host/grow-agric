@@ -28,7 +28,7 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: "Unspecified"            
         }, 
         id_number: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(10),
             allowNull: true,
             unique: true  
         },               
@@ -40,7 +40,7 @@ module.exports = (sequelize, Sequelize) => {
         email:{
             type: DataTypes.STRING(65),
             allowNull: true,
-            unique: true            
+            unique: true 
         },
         age:{
             type: DataTypes.INTEGER,
@@ -48,11 +48,11 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: 0            
         },
         level_of_education:{
-            type: DataTypes.ENUM("Unspecified","Primary school","Secondary","College","University","Post graduate"),
+            type: DataTypes.ENUM("Unspecified","Primary","Secondary","College","University","Post graduate"),
             defaultValue: "Unspecified"            
         },
         is_married:{
-            type: DataTypes.ENUM("Unspecified","Yes","No"),
+            type: DataTypes.ENUM("Unspecified","Married","Single"),
             defaultValue: "Unspecified"          
         },
         year_of_experience:{
@@ -62,7 +62,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         home_county:{
             type: DataTypes.STRING(40),
-            allowNull: true           
+            defaultValue: "Unspecified"         
         },
         financial_sponsor:{
             type: DataTypes.STRING(30),

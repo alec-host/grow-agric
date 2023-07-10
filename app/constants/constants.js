@@ -10,5 +10,10 @@ module.exports = {
     DATABASE_HOST: process.env.DB_HOST,
     DATABASE_PORT: process.env.DB_PORT,
     DATABASE_PASS: process.env.DB_PASS,
-    COOKIE_SECRET: process.env.COOKIE_SECRET
+    COOKIE_NAME: process.env.COOKIE_NAME,
+    COOKIE_PASSWORD: process.env.COOKIE_PASSWORD,
+    COOKIE_SECRET: process.env.COOKIE_SECRET,
+    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL,
+    SUPER_ADMIN_PASS: process.env.SUPER_ADMIN_PASS,
+    SUPER_ADMIN_ROLE: process.env.SUPER_ADMIN_ROLE
 }

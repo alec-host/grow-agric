@@ -3,7 +3,6 @@ const { accessToken, refreshToken } = require("../services/JWT");
 const common = require("./utility/common.controller");
 const db = require("../models");
 
-const User = db.users;
 const Farm = db.farms;
 const Op = db.Sequelize.Op;
 
@@ -12,10 +11,24 @@ const getPagingData = require("./utility/page.data");
 
 module.exports.AddFarm = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
-        const {farm_uuid,county,sub_county,ward,number_of_employees,farmer_uuid,item_farmed,is_insured,insurer} = req.body;
+        const {phone_number,farmer_uuid,item_farmed,county,sub_county,ward,bird_house_capacity,number_of_years_farming,number_of_employees,is_insured,insurer} = req.body;
         const user = await common.findUserByUUID(farmer_uuid);
         if(user){
-            const createPayload = {farm_uuid,county,sub_county,ward,number_of_employees,farmer_uuid,item_farmed,is_insured,insurer};
+            const createPayload = 
+                    {
+                        phone_number:phone_number,
+                        farmer_id:user._id,
+                        farmer_uuid:farmer_uuid,
+                        item_farmed:item_farmed,
+                        county:county,
+                        sub_county:sub_county,
+                        ward:ward,
+                        bird_house_capacity:bird_house_capacity,
+                        number_of_years_farming:number_of_years_farming,
+                        number_of_employees:number_of_employees,                        
+                        is_insured:is_insured,
+                        insurer:insurer
+                    };
             const newFarm = await createFarm(createPayload);
             if(newFarm[0]){
                 return res.status(201).json({

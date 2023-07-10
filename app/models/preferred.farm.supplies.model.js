@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize, Sequelize) => {
     
-    const PreferredFeeds = sequelize.define("preferred_feeds", {
+    const PreferredFeeds = sequelize.define("preferred_farm_supplies", {
         _id:{
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -37,7 +37,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
         indexes: [{
-            name: 'idx_preferred_feed',
+            name: 'idx_preferred_supplies',
             unique: false,
             fields : ['farmer_id','farmer_uuid'] 
         }]

@@ -1,4 +1,4 @@
-const { body, param, validationResult } = require("express-validator");
+const { body, param, validationResult, query, check } = require("express-validator");
 
 const db = require("../models");
 const User = db.users;
@@ -175,20 +175,13 @@ module.exports.tokeValidator = [
 ];
 
 module.exports.newOTPValidator = [
-    param("phoneNumber")
+    param('phoneNumber')
         .trim()
         .notEmpty()
-        .withMessage("Phone number CANNOT be empty.")
-        .custom(async(value) => {
-            if(typeof value != 'undefined'){
-                throw new Error("Param MUST be provided");
-            }else{
-                const user = await User.findOne({where:{phone_number:value}}).catch(e => { return false; });
-                if(!user || user == null){
-                    throw new Error("Phone number cannot be found.");
-                }
-            }
-        }),
+        .withMessage('Param CANNOT be empty.'),
+    param('phoneNumber')    
+        .isInt()
+        .withMessage('Param MUST be an integer.'),       
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty())
@@ -200,4 +193,25 @@ module.exports.newOTPValidator = [
             });
         next();
     }          
+];
+
+module.exports.accountVerificationValidator = [
+    param('phoneNumber')
+        .trim()
+        .notEmpty()
+        .withMessage('Param CANNOT be empty.'),
+    param('phoneNumber')    
+        .isInt()
+        .withMessage('Param MUST be an integer.'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(400).json({
+                success: false,
+                error: true,
+                validation:{errors:errors.array()},
+                message: "Param MUST be provided.",
+            });
+        next();
+    }
 ];

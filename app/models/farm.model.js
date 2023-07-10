@@ -41,7 +41,12 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: 0            
         },
-        bird_capacity: {
+        number_of_years_farming:{
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0          
+        },
+        bird_house_capacity: {
             type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: 0

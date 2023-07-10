@@ -1,3 +1,4 @@
+const AdminBro = require('admin-bro');
 const db = require("../../app/models");
 
 const User = db.users;
@@ -21,17 +22,19 @@ const UserResource = {
                 isVisible: false,                        
             },
             edit: {
-                isAccessible: false,
+                isAccessible: ({currentAdmin}) => {
+                    if(currentAdmin.role == 'admin'){return true}else{return false}},
                 isVisible: false,
             },
             new: {
-                isAccessible: false,
+                isAccessible: ({currentAdmin}) => {
+                    if(currentAdmin.role == 'admin'){return true}else{return false}},
                 isVisible: false,
             },
             bulkDelete:{
                 isAccessible: false,
                 isVisible: false,                        
-            },
+            }
         }, 
     },
     sort: {

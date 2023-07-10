@@ -18,10 +18,10 @@ const FinanceApprovedResource = {
                 actionName: 'list?filters.application_status=IN REVIEW&step=1',
             })
         },        
-        listProperties: ['applicant_name','phone_number','loan_amount','projected_sales','financial_sponsor','application_status','date_required'],
+        listProperties: ['applicant_name','phone_number','loan_amount','projected_sales_price_per_chick','financial_sponsor','application_status','date_required'],
         filterProperties: ['applicant_name','phone_number','loan_amount','financial_sponsor','application_status','date_required'],
         editProperties: [],
-        showProperties: ['applicant_name','phone_number','loan_amount','projected_sales','financial_sponsor','application_status','date_required'],
+        showProperties: ['applicant_name','phone_number','loan_amount','projected_sales_price_per_chick','financial_sponsor','application_status','date_required'],
         parent: financesNavigation,
         actions:{
             delete:{

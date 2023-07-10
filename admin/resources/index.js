@@ -11,6 +11,8 @@ const FinanceApprovedResource = require('./finance.approved.resource');
 const FinanceFarmingToStartResource = require('./finance.farmtostart.resource');
 const FinanceFarmingStartsResource = require('./finance.farmstarts.resource');
 const SaleResource = require('./sale.resource');
+const PortalUserResource = require('./portal.user.resources');
+const UserProfileResource = require('./profile.user.resource');
 
 const User = db.users;
 const Farm = db.farms;
@@ -58,6 +60,18 @@ const UserResourceTest = {
     };
 
 const AdminBroOptions = {
+    /*
+    pages:{
+        'User Profile':{
+            label: "Custom page",
+            handler: async(request, response, context) => {
+                console.log(context);
+            },
+            component: AdminBro.bundle("../../admin/components/create-portal-user-component.tsx"),
+            icon: 'User',
+        }
+    },
+    */
     resources:[
         {resource: FinancePendingReviewResource.resource,options:FinancePendingReviewResource.options,sort:FinancePendingReviewResource.sort},
         {resource: FinanceInReviewResource.resource,options:FinanceInReviewResource.options,sort:FinanceInReviewResource.sort},
@@ -69,6 +83,8 @@ const AdminBroOptions = {
         {resource: UserResource.resource,options:UserResource.options,sort:UserResource.sort},
         {resource: FarmResource.resource,options:FarmResource.options,sort:FarmResource.sort},
         {resource: SaleResource.resource,options:SaleResource.options,sort:SaleResource.sort},
+        {resource: PortalUserResource.resource,options:PortalUserResource.options,sort:PortalUserResource.sort},
+        {resource: UserProfileResource.resource,options:UserProfileResource.options,sort:UserProfileResource.sort},
         {resource: UserResourceTest.resource,options:UserResourceTest.options},
         ],
     rootPath: '/admin',

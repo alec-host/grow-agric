@@ -23,8 +23,6 @@ const LoanReviewAction = (props : ActionProps) => {
 
   console.log("zip zipa "+data._id);
 
-  console.log("ccncckfkfkfkkfk  "+stepCnt);
-
   //-.get farmers details.
   useEffect(() => {
         const api = new ApiClient();
@@ -104,7 +102,6 @@ const LoanReviewAction = (props : ActionProps) => {
     const inputRecordText =  document.getElementById("record");
     const radioOptionText = document.querySelector( 'input[name="optionReview"]:checked');
     const serverMessage = document.getElementById("server_message");
-
 
     if(inputReasonText.value == "" || inputRecordText.value == "") {
      inputReasonText?.focus();
@@ -223,8 +220,8 @@ const LoanReviewAction = (props : ActionProps) => {
                 </span>
               </p>              
               <p>
-                <span style={{fontSize:"13px"}}><Icon icon="Types"/> Current production: 
-                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.current_production.toLocaleString()}</span>
+              <span style={{fontSize:"13px"}}><Icon icon="Types"/> Current production: 
+                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.number_of_chicks_raised_now.toLocaleString()}</span>
                 </span> 
               </p>
               <p>
@@ -249,7 +246,7 @@ const LoanReviewAction = (props : ActionProps) => {
               </p>
               <p>
                 <span style={{fontSize:"13px"}}><Icon icon="Types"/> Broad cost:  
-                  &nbsp;<span style={{fontWeight:"bolder"}}>KSH. {data.broad_cost.toLocaleString()}</span>
+                  &nbsp;<span style={{fontWeight:"bolder"}}>KSH. {data.brooding_cost.toLocaleString()}</span>
                 </span> 
               </p>
               <p>

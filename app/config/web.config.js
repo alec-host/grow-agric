@@ -4,34 +4,51 @@ const AdminBroSequelize = require("@admin-bro/sequelize");
 const AdminBroExpress = require("@admin-bro/express");
 const app = express();
 
-app.use(express.json());
 
 const db = require("../models");
+
 const { AdminBroOptions } = require("../../admin/resources");
-const { DASHBORD_SERVER_PORT, COOKIE_SECRET } = require("../constants/constants");
+const { DASHBORD_SERVER_PORT, COOKIE_SECRET, SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASS, SUPER_ADMIN_ROLE, COOKIE_NAME, COOKIE_PASSWORD } = require("../constants/constants");
+const { findUserByEmail } = require("../controllers/utility/common.controller");
+const { authenticateWebPortalUser } = require("../controllers/web.admin.controller");
 
 const PORT = DASHBORD_SERVER_PORT;
 
 //-.register AdminBro.
 AdminBro.registerAdapter(AdminBroSequelize);
+
+db.sequelize.sync()
+  .then(() => {
+  console.log("Synced db.");
+})
+  .catch((err) => {
+  console.log("Failed to sync db: " + err.message);
+});
+
+//temp login details
+const SUPER_ADMIN = {
+    email: SUPER_ADMIN_EMAIL,
+    password: SUPER_ADMIN_PASS,
+    role: SUPER_ADMIN_ROLE
+};
+
 //-.load options.
 const adminBro = new AdminBro(AdminBroOptions);
 
-//temp login details
-const ADMIN = {
-    email: 'admin@admin.com',
-    password: 'admin',
-};
-
 const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
     authenticate: async (email, password) => {
-      if (ADMIN.password === password && ADMIN.email === email) {
-        return ADMIN
+      const user = await findUserByEmail(email);
+      if(user){
+        const result = await authenticateWebPortalUser(email,password);
+        return result;
+      }else if(SUPER_ADMIN.password === password && SUPER_ADMIN.email === email){
+        return SUPER_ADMIN;
+      }else{
+        return null;
       }
-      return null
     },
-    cookieName: 'adminbro',
-    cookiePassword: 'somepassword',
+    cookieName: COOKIE_NAME,
+    cookiePassword: COOKIE_PASSWORD,
     session: {
         secret: COOKIE_SECRET,
         resave: true,
@@ -43,6 +60,7 @@ const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
 
   app.use(express.static("./public"));
   app.use(adminBro.options.rootPath,router);
+  app.use(express.json());
 
   module.exports = {
     app,

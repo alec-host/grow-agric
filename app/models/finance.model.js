@@ -47,7 +47,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
             Comment: "Unormalize: column added to avoid use of joins." 
         },      
-        current_production:{
+        number_of_chicks_raised_now:{
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0            
@@ -67,12 +67,12 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: '0.00'            
         },  
-        broad_cost:{
+        brooding_cost:{
             type: DataTypes.DOUBLE(10,2),
             allowNull: false,
             defaultValue: '0.00'            
         },  
-        projected_sales:{
+        projected_sales_price_per_chick:{
             type: DataTypes.DOUBLE(10,2),
             allowNull: false,
             defaultValue: '0.00'            
@@ -102,7 +102,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
         indexes: [{
-            name: 'idx_fin',
+            name: 'idx_finance',
             unique: false,
             fields : ['application_uuid','phone_number','farmer_uuid','is_archived'] 
         }]
