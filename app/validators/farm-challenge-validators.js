@@ -8,7 +8,7 @@ module.exports.farmChallengeValidator = [
     body("phone_number")
         .trim()
         .notEmpty()
-        .withMessage("County CANNOT be empty.")
+        .withMessage("Phone number CANNOT be empty.")
         .bail()
         .custom(async(value,{req}) => {
             const user = await User.findOne({where:{phone_number:req.body.phone_number}}).catch(e => { return false; });
@@ -19,11 +19,11 @@ module.exports.farmChallengeValidator = [
     body("challenges_faced")
         .trim()
         .notEmpty()
-        .withMessage("Sub county CANNOT be empty"),
+        .withMessage("Challenges CANNOT be empty"),
     body("other_challenges")
         .trim()
         .notEmpty()
-        .withMessage("Ward CANNOT be empty"),
+        .withMessage("Other challenges CANNOT be empty"),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty())

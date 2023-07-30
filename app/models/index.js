@@ -33,6 +33,10 @@ const sequelize = new Sequelize(
   db.sales = require("./sales.model")(sequelize,Sequelize);
   db.portalusers = require("./admin.user.model")(sequelize,Sequelize);
 
+  db.financiacyclereport = require("./financial.cycle.report.model")(sequelize,Sequelize);
+  db.totalfundsdisbursed = require("./total.funds.disbursed")(sequelize,Sequelize);
+  db.hearaboutus = require("./hear.about.us.model")(sequelize,Sequelize);
+
   //-.relationship btwn users & extras.
   db.users.hasOne(db.usersextra,{foreignKey:"farmer_id",sourceKey:"_id"});
   db.usersextra.belongsTo(db.users,{foreignKey:"farmer_id",sourceKey:"_id"});

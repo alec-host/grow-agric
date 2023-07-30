@@ -2,7 +2,9 @@ const AdminBro = require('admin-bro');
 const db = require("../../app/models");
 
 const FarmResource = require('./farm.resource');
+const FarmChallengeResource = require('./farm.challenge.resource');
 const UserResource = require('./user.resource');
+const FinanceResource = require('./finance.resource');
 const FinancePendingReviewResource = require('./finance.pendingreview.resource');
 const FinanceFinalizingResource = require('./finance.finalizing.resource');
 const FinanceInReviewResource = require('./finance.inreview.resource');
@@ -10,15 +12,17 @@ const FinancePurchaseOrderCompletedResource = require('./finance.pocompleted.res
 const FinanceApprovedResource = require('./finance.approved.resource');
 const FinanceFarmingToStartResource = require('./finance.farmtostart.resource');
 const FinanceFarmingStartsResource = require('./finance.farmstarts.resource');
+const FinanceExtraResource = require('./finance.log.resource');
 const SaleResource = require('./sale.resource');
 const PortalUserResource = require('./portal.user.resources');
 const UserProfileResource = require('./profile.user.resource');
 
 const User = db.users;
 const Farm = db.farms;
+const FarmChallenge = db.farmchallenges;
 const Finance = db.finances;
+const FinanceExtra = db.financeextras;
 const Sale = db.sales;
-
 
 const nav = {
     name: 'TEST PANEL',
@@ -32,7 +36,7 @@ const UserResourceTest = {
         parent:nav,
         actions: {
             FinanceReview: {
-                actionType: 'record',
+                actionType: 'resource',
                 icon: 'Money',
                 handler: async(request, response, context) => {
                     const { record, currentAdmin } = context
@@ -41,7 +45,7 @@ const UserResourceTest = {
                         msg: 'Hello world',
                     }
                 },
-                component: AdminBro.bundle("../components/finance-review-component.tsx"),
+                //component: AdminBro.bundle("../components/pdf-component.tsx"),
             },
             delete:{
                 isAccessible: false,
@@ -55,6 +59,12 @@ const UserResourceTest = {
                 isAccessible: false,
                 isVisible: false,
             },
+            list:{
+                before: async (request, context) => {
+                    request.query.perPage = 20;
+                    return request;
+                }
+            }
         },
         },
     };
@@ -72,7 +82,19 @@ const AdminBroOptions = {
         }
     },
     */
+    dashboard:{
+        handler: async () => {
+            return {some:'output'};
+        },
+        component: AdminBro.bundle('../components/dashboard.component.tsx'),
+        sections: {
+            customSection: {
+                resources: ['farmers'],
+            }
+        }
+    },
     resources:[
+        {resource: FinanceResource.resource,options:FinanceResource.options,sort:FinanceResource.sort},
         {resource: FinancePendingReviewResource.resource,options:FinancePendingReviewResource.options,sort:FinancePendingReviewResource.sort},
         {resource: FinanceInReviewResource.resource,options:FinanceInReviewResource.options,sort:FinanceInReviewResource.sort},
         {resource: FinanceFinalizingResource.resource,options:FinanceFinalizingResource.options,sort:FinanceFinalizingResource.sort},
@@ -80,8 +102,10 @@ const AdminBroOptions = {
         {resource: FinanceApprovedResource.resource,options:FinanceApprovedResource.options,sort:FinanceApprovedResource.sort},
         {resource: FinanceFarmingToStartResource.resource,options:FinanceFarmingToStartResource.options,sort:FinanceFarmingToStartResource.sort},
         {resource: FinanceFarmingStartsResource.resource,options:FinanceFarmingStartsResource.options,sort:FinanceFarmingStartsResource.sort},
+        {resource: FinanceExtraResource.resource,options:FinanceExtraResource.options,sort:FinanceExtraResource.sort},
         {resource: UserResource.resource,options:UserResource.options,sort:UserResource.sort},
         {resource: FarmResource.resource,options:FarmResource.options,sort:FarmResource.sort},
+        {resource: FarmChallengeResource.resource,options:FarmChallengeResource.options,sort:FarmChallengeResource.sort},
         {resource: SaleResource.resource,options:SaleResource.options,sort:SaleResource.sort},
         {resource: PortalUserResource.resource,options:PortalUserResource.options,sort:PortalUserResource.sort},
         {resource: UserProfileResource.resource,options:UserProfileResource.options,sort:UserProfileResource.sort},
@@ -106,6 +130,17 @@ const AdminBroOptions = {
             },
             resources: {
                 Finance,
+                    /*AllRequests:{
+                        properties:{
+                            application_uuid: 'UUID',
+                            application_status: 'Status',
+                            applicant_name: 'Name',
+                            phone_number: 'Phone Number',
+                        },
+                        messages:{
+                            noRecordsInResource: 'No Record[s] to display.'
+                        }                        
+                    },*/
                     FinanceFilteredByPendingReviewStatus:{
                         properties:{
                             application_uuid: 'UUID',
@@ -182,8 +217,14 @@ const AdminBroOptions = {
                         messages:{
                             noRecordsInResource: 'No Record[s] to display.'
                         }
-                    },                                                                                             
-                User,
+                    },
+                    FinanceExtra,
+                    Logs:{
+                        messages:{
+                            noRecordsInResource: 'No Record[s] to display.'
+                        }                       
+                    },                                                                                          
+                    User,
                     farmers:{
                         properties:{
                             farmer_uuid: 'UUID',
@@ -208,7 +249,7 @@ const AdminBroOptions = {
                             noRecordsInResource: 'No Farmer\'s data to display.'
                         }
                     },                    
-                Farm,
+                    Farm,
                     farms: {
                         properties: {
 
@@ -217,7 +258,7 @@ const AdminBroOptions = {
                             noRecordsInResource: 'No Farm\'s data to display.'
                         },
                     },
-                Sale,
+                    Sale,
                     sales: {
                         properties: {
                             sales_uuid: 'UUID',
@@ -245,7 +286,7 @@ const AdminBroOptions = {
     },
     assets: {
         styles: ['/css/sidebarcustom.css']
-    },
+    }
 };
 
 module.exports = {

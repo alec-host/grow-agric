@@ -24,6 +24,7 @@ module.exports.preferredFarmValidator = [
         .trim()
         .notEmpty()
         .withMessage("Feed supplier CANNOT be empty"),
+    /*    
     body("other_chick_supplier")
         .trim()
         .notEmpty()
@@ -31,7 +32,8 @@ module.exports.preferredFarmValidator = [
     body("other_feed_supplier")
         .trim()
         .notEmpty()
-        .withMessage("Other feed supplier CANNOT be empty"),                
+        .withMessage("Other feed supplier CANNOT be empty"), 
+    */           
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty())

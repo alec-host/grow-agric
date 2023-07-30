@@ -39,8 +39,9 @@ module.exports = (sequelize, Sequelize) => {
             Comment: "Unormalize: column added to avoid use of joins."     
         },        
         loan_amount: {
-            type: Sequelize.INTEGER,
-            foreignKey: true
+            type: DataTypes.DOUBLE(10,2),
+            allowNull: false,
+            defaultValue: '0.00'
         },
         financial_sponsor:{
             type: DataTypes.STRING(30),

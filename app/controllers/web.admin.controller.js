@@ -7,8 +7,9 @@ const { findUserByEmail } = require("./utility/common.controller");
 exports.authenticateWebPortalUser = async(email,password) => {
    if(email && password) {
         const user = await findUserByEmail(email);
+        console.log(user);
         if(user && await compare(password,user.password)){
-            const ADMIN = {email:user.email,password:user.password,role:user.role};
+            const ADMIN = {email:user.email,password:user.password,role:user.role,names:user.first_name+' '+user.last_name};
             return ADMIN;
         }else{
             return null;

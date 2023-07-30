@@ -13,5 +13,5 @@ import Component6 from '../admin/components/create-portal-user-component'
 AdminBro.UserComponents.Component6 = Component6
 import Component7 from '../admin/components/profile-component'
 AdminBro.UserComponents.Component7 = Component7
-import Component8 from '../admin/components/finance-review-component'
+import Component8 from '../admin/components/dashboard.component'
 AdminBro.UserComponents.Component8 = Component8

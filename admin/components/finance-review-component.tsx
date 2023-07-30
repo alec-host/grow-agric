@@ -2,63 +2,37 @@ import React, { FormEvent, useEffect ,useState} from 'react';
 
 import { Box, Header, Button, Icon, TextArea, Label, Section, SmallText, Badge } from '@admin-bro/design-system';
 
-import { ActionProps } from 'admin-bro';
-import { ApiClient } from 'admin-bro';
+import { ActionProps,ApiClient,useCurrentAdmin } from 'admin-bro';
+
 
 import { Stepper } from 'react-form-stepper';
 
 import axios from 'axios';
 
 const LoanReviewAction = (props : ActionProps) => {
+
+  const currentAdmin = useCurrentAdmin();
   const { record,resource } = props;
   const data=record?.params;
-  const stepCnt = resource.href?.split('&')[1].replace('step=','').trim() ;
+  
+  const stepCnt = resource.href?.includes('?') ?? resource.href?.split('&')[1].replace('step=','').trim();
+
+    //const stepCnt = resource.href?.includes('?') ?? resource.href?.split('&')[1].replace('step=','').trim();
+
   const steps = [{label:'Stage 1: Pending Review'}, 
                  {label:'Stage 2: In Review'},
                  {label:'Stage 3: Finalizing'},
                  {label:'Stage 4: PO. Completed'},
                  {label:'Stage 5: Loan Approved'},
                  {label:'Stage 6: Farm to Start'},
-                 {label:'Stage 7: Farming Starts'}];
-
-  console.log("zip zipa "+data._id);
-
-  //-.get farmers details.
-  useEffect(() => {
-        const api = new ApiClient();
-        api.resourceAction({
-          resourceId:'farmers',
-          actionName:'list',
-          baseURL:'http://localhost:8590/admin/',
-          method:'GET',
-          query:'?filters.phone_number=' + data.phone_number,
-        }).then(results => {
-          const spanFirstname = document.getElementById('fname');
-          spanFirstname.textContent = results.data.records[0].params.first_name;
-          const spanLastname = document.getElementById('lname');
-          spanLastname.textContent = results.data.records[0].params.last_name;
-          const signupDate = document.getElementById('signup_date');
-          signupDate.textContent = results.data.records[0].params.createdAt;
-          const spanMarried = document.getElementById('married');
-          spanMarried.textContent = results.data.records[0].params.is_married;
-          const spanAge = document.getElementById('age');
-          spanAge.textContent = results.data.records[0].params.age? 0: 'Not_provided';
-          const spanExperience = document.getElementById('exp');
-          spanExperience.textContent = results.data.records[0].params.year_of_experience? 0: 'Not_provided';
-        })
-        .catch(err =>{
-          console.log("error:");
-        });
-  },[]);
-
+                 {label:'Stage 7: Farming Starts'}]; 
+  
   useEffect(() =>{
-    const api = new ApiClient();
-    api.resourceAction({
-      resourceId:'farms',
-      actionName:'list',
-      baseURL:'http://localhost:8590/admin/',
+    const definedURL = "http://localhost:8590/admin/api/resources/farms/actions/list?filters.farmer_uuid=" +  data.farmer_uuid;
+    axios({
       method:'GET',
-      query:'?filters.farmer_uuid=' + data.farmer_uuid,
+      maxBodyLength:Infinity,
+      url:definedURL
     }).then(results => {
       const itemFarmed = document.getElementById('item_farmed');
       itemFarmed.textContent = results.data.records[0].params.item_farmed;
@@ -69,16 +43,60 @@ const LoanReviewAction = (props : ActionProps) => {
       const spanHasInsurance = document.getElementById('has_insurance');
       spanHasInsurance.textContent = results.data.records[0].params.is_insured ? 0: 'No';
       const spanProvider = document.getElementById('provider');
-      spanProvider.textContent = results.data.records[0].params.insurer? null: 'None';
+      spanProvider.textContent = results.data.records[0].params.insurer != "0" ? results.data.records[0].params.insurer : 'None';
       const spanEmployeeCnt = document.getElementById('employee_count');
       spanEmployeeCnt.textContent = results.data.records[0].params.number_of_employees;
       const spanHouseCapacity = document.getElementById('house_capacity');
-      spanHouseCapacity.textContent = results.data.records[0].params.bird_capacity.toLocaleString();
+      spanHouseCapacity.textContent = results.data.records[0].params.bird_house_capacity.toLocaleString();
+      const spanExperience = document.getElementById('exp');
+      spanExperience.textContent = results.data.records[0].params.number_of_years_farming > 0 ? " (farming "+ results.data.records[0].params.item_farmed + ") : " + results.data.records[0].params.number_of_years_farming : 'Not_provided';
+    })
+  },[]);
+
+  //-.get farmers details.
+  useEffect(() =>{
+    const definedURL = "http://localhost:8590/admin/api/resources/farmers/actions/list?filters.phone_number=" + data.phone_number;
+    const formData = new FormData();
+    axios({
+      method:'GET',
+      maxBodyLength:Infinity,
+      url:definedURL
+    })
+    .then(function (response) {
+      const data = response.data.records[0].params;
+      const spanFirstname = document.getElementById('fname');
+      spanFirstname.textContent = data.first_name;
+      const spanLastname = document.getElementById('lname');
+      spanLastname.textContent = data.last_name;
+      const signupDate = document.getElementById('signup_date');
+      signupDate.textContent = data.createdAt.replace(/T.*Z/, '');
+      const spanMarried = document.getElementById('married');
+      spanMarried.textContent = data.is_married;
+      const spanAge = document.getElementById('age');
+      spanAge.textContent = data.age > 0 ? data.age : 'Not_provided';
     })
     .catch(err =>{
       console.log("error:");
     });
-  });
+  },[]);
+
+
+  const logHandle = (reason) => {
+    const api = new ApiClient();
+    api.resourceAction({
+    resourceId:'Logs',
+    actionName:'new',
+    baseURL:'http://localhost:8590/admin/',
+    method:'POST',
+    headers: { 'Content-Type': 'application/json',},
+    data: JSON.stringify({application_id:data._id,application_uuid:data.application_uuid,reason:reason,approved_by:currentAdmin[0].names}),
+    }).then(results => {
+        console.log(results);
+    })
+    .catch(err =>{
+    console.log("error:     "+err);
+    });
+  };
 
   useEffect(() =>{
     const api = new ApiClient();
@@ -96,7 +114,7 @@ const LoanReviewAction = (props : ActionProps) => {
       console.log("error:");
     });
   });
-
+  
   const handleOnSubmit = (event:FormEvent) => {
     const inputReasonText = document.getElementById("message");
     const inputRecordText =  document.getElementById("record");
@@ -143,6 +161,8 @@ const LoanReviewAction = (props : ActionProps) => {
         }
         serverMessage.textContent=response.data.notice.message;
         console.log(response.data.notice);
+        logHandle(inputReasonText.value);
+
       });
       inputReasonText.value = "";
       event.preventDefault();
@@ -181,8 +201,6 @@ const LoanReviewAction = (props : ActionProps) => {
       </Box>
     )
   };
-
-  //const [currentStep, setCurrentStep] = useState(1);
   
   return (
     <Box>
@@ -206,12 +224,22 @@ const LoanReviewAction = (props : ActionProps) => {
               <div style={{height:"10px"}}/>
               <p>
                 <span style={{fontSize:"13px"}}><Icon icon="Time"/> Application date:  
-                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.date_created}</span>
+                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.createdAt.replace(/T.*Z/, '')}</span>
                 </span>
-              </p>              
+              </p>  
+              <p>
+                <span style={{fontSize:"13px"}}><Icon icon="User"/> Applicant name:  
+                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.applicant_name}</span>
+                </span>
+              </p> 
+              <p>
+                <span style={{fontSize:"13px"}}><Icon icon="Types"/> Projected price per chicken:  
+                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.projected_sales_price_per_chick}</span>
+                </span>
+              </p>                                       
               <p>
                 <span style={{fontSize:"13px"}}><Icon icon="Types"/> Loan amount: 
-                  &nbsp;<span style={{fontWeight:"bolder"}}>KSH. {data.loan_amount}</span>
+                  &nbsp;<span style={{fontWeight:"bolder"}}>KSH. {data.loan_amount.toLocaleString()}</span>
                 </span>
               </p>
               <p>
@@ -220,12 +248,12 @@ const LoanReviewAction = (props : ActionProps) => {
                 </span>
               </p>              
               <p>
-              <span style={{fontSize:"13px"}}><Icon icon="Types"/> Current production: 
+              <span style={{fontSize:"13px"}}><Icon icon="Types"/> No. of chicken currently raised: 
                   &nbsp;<span style={{fontWeight:"bolder"}}>{data.number_of_chicks_raised_now.toLocaleString()}</span>
                 </span> 
               </p>
               <p>
-                <span style={{fontSize:"13px"}}><Icon icon="Types"/> Farm house capacity: 
+                <span style={{fontSize:"13px"}}><Icon icon="Types"/> Bird house capacity: 
                   &nbsp;<span id="house_capacity" style={{fontWeight:"bolder"}}></span>
                 </span> 
               </p>
@@ -251,7 +279,7 @@ const LoanReviewAction = (props : ActionProps) => {
               </p>
               <p>
                 <span style={{fontSize:"13px"}}><Icon icon="Building"/> Financial sponsor:  
-                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.financial_sponsor}</span>
+                  &nbsp;<span style={{fontWeight:"bolder"}}>{data.financial_sponsor != null ? data.financial_sponsor: "Not provided"}</span>
                 </span>
               </p>
               <p>
@@ -277,7 +305,7 @@ const LoanReviewAction = (props : ActionProps) => {
           <Section>
             <Box variant="card">
               <span style={{ fontWeight: 'bold', fontFamily: 'calibri',fontSize: '20px', color: 'GrayText'}}>
-                <Icon icon="User"/> <span id="fname"></span>
+                <Icon icon="User"/> <span id="fname">{data.first_name}</span>
               </span>
               <span style={{ fontWeight: 'bold', fontFamily: 'calibri',fontSize: '40px' }}><span id="lname"></span></span>
               <div style={{height:"10px"}}/>
@@ -285,7 +313,7 @@ const LoanReviewAction = (props : ActionProps) => {
               <p><span style={{fontSize:'13px'}}><Icon icon="Time"/> <span id="signup_date"></span></span></p>
               <p><span style={{fontSize:'13px'}}><Icon icon="Types"/> Married: <span id="married"></span></span></p>
               <p><span style={{fontSize:'13px'}}><Icon icon="Types"/> Age: <span id="age"></span></span></p>
-              <p><span style={{fontSize:'13px'}}><Icon icon="Types"/> Years of Experience: <span id="exp"></span></span></p>
+              <p><span style={{fontSize:'13px'}}><Icon icon="Types"/> Years of Experience <span id="exp"></span></span></p>
             </Box>
           </Section>
           <div style={{background:"GrayText",height:"1px"}}/>

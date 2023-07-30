@@ -1,4 +1,5 @@
 const db = require("../models");
+const common = require("./utility/common.controller");
 
 const PreferredFarmSupplies = db.preferredfarmsupplies;
 
@@ -49,7 +50,7 @@ exports.AddFarmSupplies = async(req,res) => {
 const createFarmPreferredSupplies = async(payload) => {
     const newFarmSupplies = await PreferredFarmSupplies.create(payload);
     if(!newFarmSupplies) {
-        return [false,"Attention: add finance has failed"];
+        return [false,"Attention: add preferred supplies has failed"];
     }
     return [true,newFarmSupplies];
 };

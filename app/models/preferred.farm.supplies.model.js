@@ -28,11 +28,11 @@ module.exports = (sequelize, Sequelize) => {
         },
         other_chick_supplier:{
             type: DataTypes.STRING(35),
-            allowNull: false           
+            allowNull: true           
         },  
         other_feed_supplier:{
             type: DataTypes.STRING(35),
-            allowNull: false           
+            allowNull: true           
         }
     },
     {

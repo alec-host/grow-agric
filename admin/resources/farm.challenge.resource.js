@@ -2,15 +2,15 @@ const AdminBro = require('admin-bro');
 
 const db = require("../../app/models");
 
-const Farm = db.farms;
+const FarmChallenge = db.farmchallenges;
 
 const farmsNavigation = {
     name: 'Farm Info',
     icon: 'Building',
 };
 
-const FarmResource = {
-    resource: Farm,
+const FarmChallengeResource = {
+    resource: FarmChallenge,
     options: {
         parent: farmsNavigation,
         actions: {
@@ -47,4 +47,4 @@ const FarmResource = {
     },
 };
 
-module.exports = FarmResource;
+module.exports = FarmChallengeResource;

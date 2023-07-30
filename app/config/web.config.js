@@ -4,7 +4,6 @@ const AdminBroSequelize = require("@admin-bro/sequelize");
 const AdminBroExpress = require("@admin-bro/express");
 const app = express();
 
-
 const db = require("../models");
 
 const { AdminBroOptions } = require("../../admin/resources");

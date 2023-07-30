@@ -9,15 +9,19 @@ const UserProfileAction = (props : ActionProps) => {
 
     const { resource } = props;
     
+    const myURL = 'http://localhost:8590/admin/api/resources/'+resource.id+'/actions/list?'+resource.href?.toString().split('?')[1];
+
     useEffect(() => {  
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: 'http://localhost:8590/admin/api/resources/'+resource.id+'/actions/list?'+resource.href?.toString().split('?')[1],
+            url: myURL,
           };
           axios.request(config)
           .then((response) => {
-            console.log(JSON.stringify(response.data));
+            //console.log(JSON.stringify(response.data));
+            //console.log(JSON.stringify(response));
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXX '+response.data.records[0].params.first_name);
             const textFname = document.getElementById('first_name');
             textFname.textContent = response.data.records[0].params.first_name;
             const textLname = document.getElementById('last_name');

@@ -14,24 +14,34 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.INTEGER,
             foreignKey: true
         },
-        farmer_uuid: {
+        full_name:{
+            type: DataTypes.STRING(100),
+            allowNull: true,
+            Comment: "Unormalize: column added to avoid use of joins."
+        },
+        phone_number:{
+            type: DataTypes.STRING(15),
+            allowNull: true,
+            Comment: "Unormalize: column added to avoid use of joins."
+        },
+        farmer_uuid:{
             type: DataTypes.STRING(65),
             allowNull: true,
             Comment: "Unormalize: column added to avoid use of joins."           
         },       
-        challenges_faced: {
+        challenges_faced:{
+            type: DataTypes.STRING(115),
+            allowNull: true            
+        },
+        other_challenges:{
             type: DataTypes.STRING(65),
             allowNull: true            
         },
-        other_challenges: {
-            type: DataTypes.STRING(45),
-            allowNull: true            
-        },
-        is_deleted: {
+        is_deleted:{
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 0            
-        }           
+            defaultValue: 0
+        }
     },
     {
         createdAt: false,

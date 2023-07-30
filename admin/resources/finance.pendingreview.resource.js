@@ -4,24 +4,24 @@ const db = require("../../app/models");
 const Finance = db.finances;
 
 const financesNavigation = {
-    name: 'Finance Applications',
+    name: 'Finance Request(s)',
     icon: 'Finance',
 };
 
 const FinancePendingReviewResource = {
     resource: Finance,
     options:{
-        id:'FinanceFilteredByPendingReviewStatus',
+        id:'FinanceFilteredByPendingReviewStatus',       
         href: ({ h, resource }) => {
             return h.resourceActionUrl({
                 resourceId: resource.decorate().id(),
-                actionName: 'list?filters.application_status=PENDING REVIEW&step=0',
+                search: '?filters.application_status=PENDING REVIEW&step=0',
             })
         },
-        listProperties: ['applicant_name','phone_number','loan_amount','projected_sales_price_per_chick','financial_sponsor','application_status','date_required'],
-        filterProperties: ['applicant_name','phone_number','loan_amount','financial_sponsor','application_status','date_required'],
+        listProperties: ['applicant_name','phone_number','loan_amount','chick_cost','feed_cost','brooding_cost','vaccine_medicine_cost','financial_sponsor','application_status','date_required','createdAt'],
+        filterProperties: ['applicant_name','phone_number','financial_sponsor','application_status','date_required','createdAt'],
         editProperties: [],
-        showProperties: ['applicant_name','phone_number','loan_amount','projected_sales_price_per_chick','financial_sponsor','application_status','date_required'],
+        showProperties: ['applicant_name','phone_number','loan_amount','chick_cost','feed_cost','brooding_cost','vaccine_medicine_cost','financial_sponsor','application_status','date_required','createdAt'],
         parent: financesNavigation,
         actions:{
             delete:{

@@ -17,13 +17,28 @@ module.exports = (sequelize, Sequelize) => {
         application_uuid:{
             type: DataTypes.STRING(65),
             allowNull: true,
-        },      
-        approved_by:{
-            type: DataTypes.STRING(65),
-            allowNull: false           
-        },          
+        },
+        applicant_name:{
+            type: DataTypes.STRING(85),
+            allowNull: false,
+            Comment: "Unormalize: column added to avoid use of joins."     
+        },
+        phone_number:{
+            type: DataTypes.STRING(15),
+            allowNull: true,
+            Comment: "Unormalize: column added to avoid use of joins." 
+        },   
+        loan_amount: {
+            type: DataTypes.DOUBLE(10,2),
+            allowNull: false,
+            defaultValue: '0.00'
+        },        
         reason:{
             type: DataTypes.TEXT,
+            allowNull: false           
+        },
+        approved_by:{
+            type: DataTypes.STRING(65),
             allowNull: false           
         },
         is_seen:{
@@ -36,7 +51,7 @@ module.exports = (sequelize, Sequelize) => {
         indexes: [{
             name: 'idx_fin_extra',
             unique: false,
-            fields : ['application_id','application_uuid','is_seen'] 
+            fields : ['application_id','application_uuid','is_seen','phone_number'] 
         }]
     });
 

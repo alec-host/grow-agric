@@ -76,6 +76,10 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.STRING(350),
             allowNull: true
         },
+        push_notification_token:{
+            type: DataTypes.STRING(350),
+            allowNull: true          
+        },
         createdAt:{
             field:'date_created',
             type: DataTypes.DATE,
@@ -87,6 +91,11 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.DATE,
             allowNull: true,
             defaultValue: DataTypes.NOW    
+        },
+        is_field_agent:{
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: 0   
         },
         is_verified:{
             type: DataTypes.TINYINT,

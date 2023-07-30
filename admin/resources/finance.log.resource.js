@@ -1,27 +1,29 @@
 const AdminBro = require('admin-bro');
 const db = require("../../app/models");
 
-const Finance = db.finances;
+const FinanceExtra = db.financeextras;
 
 const financesNavigation = {
     name: 'Finance Request(s)',
     icon: 'Finance',
 };
 
-const FinancePurchaseOrderCompletedResource = {
-    resource: Finance,
+const FinanceExtraResource = {
+    resource: FinanceExtra,
     options:{
-        id:'FinanceFilteredByPurchaseOrderCompletionStatus',
+        id:'Logs',
+        /*   
         href: ({ h, resource }) => {
             return h.resourceActionUrl({
                 resourceId: resource.decorate().id(),
-                search: '?filters.application_status=PO COMPLETED&step=3',
+                search: '?filters.application_status=PENDING REVIEW&step=0',
             })
-        },        
-        listProperties: ['applicant_name','phone_number','loan_amount','chick_cost','feed_cost','brooding_cost','vaccine_medicine_cost','financial_sponsor','application_status','date_required','createdAt'],
-        filterProperties: ['applicant_name','phone_number','financial_sponsor','application_status','date_required','createdAt'],
+        },
+        */
+        listProperties: ['application_uuid','loan_amount','applicant_name','phone_number','reason','approved_by','createdAt'],
+        filterProperties: ['applicant_name','phone_number','approved_by'],
         editProperties: [],
-        showProperties: ['applicant_name','phone_number','loan_amount','chick_cost','feed_cost','brooding_cost','vaccine_medicine_cost','financial_sponsor','application_status','date_required','createdAt'],
+        showProperties: ['application_uuid','loan_amount','applicant_name','phone_number','reason','approved_by','createdAt'],
         parent: financesNavigation,
         actions:{
             delete:{
@@ -29,21 +31,22 @@ const FinancePurchaseOrderCompletedResource = {
                 isVisible: false,                        
             },
             edit:{
-                isAccessible: false,
+                isAccessible: true,
                 isVisible: false,
             },
             new:{
-                isAccessible: false,
+                isAccessible: true,
                 isVisible: false,
             },
             bulkDelete:{
                 isAccessible: false,
                 isVisible: false,                        
             },
-            list: {
+            list: {             
                 isAccessible: true,
-                isVisible: true,               
-            }, 
+                isVisible: true,             
+            },
+            /*             
             Review: {
                 actionType: 'record',
                 icon: 'Money',
@@ -56,7 +59,8 @@ const FinancePurchaseOrderCompletedResource = {
                     console.log("xiz "+currentAdmin+"   "+request);
                 },
                 component: AdminBro.bundle("../components/finance-review-component.tsx"),
-            },                                 
+            }, 
+            */          
         },
     },
     sort:{
@@ -65,4 +69,4 @@ const FinancePurchaseOrderCompletedResource = {
     },
 };
 
-module.exports=FinancePurchaseOrderCompletedResource;
+module.exports=FinanceExtraResource;

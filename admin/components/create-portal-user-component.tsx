@@ -1,7 +1,8 @@
-import { Box, Header, Button, Icon, TextArea, Label, Section, SmallText, Badge,Input } from '@admin-bro/design-system';
+import { Box, Header, Button, Label, Input } from '@admin-bro/design-system';
 import { ActionProps } from 'admin-bro';
 import React,{FormEvent} from 'react';
 import { ApiClient } from 'admin-bro';
+
 /*
 import axios from 'axios';
 */
@@ -17,7 +18,7 @@ const CreateNewUserAction = (props : ActionProps) => {
         }else{
             const api = new ApiClient();
             api.resourceAction({
-            resourceId:'portal_users',
+            resourceId:'PortalUsers',
             actionName:'new',
             baseURL:'http://localhost:8590/admin/',
             method:'POST',

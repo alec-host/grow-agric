@@ -10,10 +10,13 @@ const Users = db.users;
 const UsersExtra = db.usersextra;
 const UserOtp = db.userotp;
 const Op = db.Sequelize.Op;
+const {fn, col } = db.Sequelize;
 
 const getPagination = require("./utility/pagination");
 const getPagingData = require("./utility/page.data");
 const { getAccountVerifiedCountByPhoneNumber } = require("./utility/common.controller");
+const { sendSMS } = require("../services/SMS");
+const { OTP_MESSAGE } = require("../constants/message.template");
 
 let refreshTokens = [];
 
@@ -36,13 +39,14 @@ exports.registerUser = async(req,res) => {
                 if(newUser[0]){
                     //-.record some data.
                     await createUserExtra({farmer_id:newUser[1].toJSON()._id,farmer_uuid:newUser[1].toJSON().farmer_uuid});
-                    await createUserOtp(createPayload);
+                    const emalifyResp = await createUserOtp(createPayload);
+                    console.log('OTP '+ otpGenerated);
                     const {phone_number,farmer_uuid,first_name,last_name,id_number,email,home_county,gender,age,is_married,level_of_education} = newUser[1];
                     return res.status(201).json({
                         success: true,
                         error: false,
                         message: {phone_number,farmer_uuid,first_name,last_name,id_number,email,home_county,gender,age,is_married,level_of_education}
-                    });                   
+                    });               
                 }else{
                     return res.status(400).json({
                         success: false,
@@ -186,7 +190,6 @@ exports.modifyUser = async(req,res) => {
     const user_uuid = req.params ? req.params.reference_id : "";
     if(Object.keys(req.body).length !== 0) {
         const {email} = req.body;
-        console.log("zip zap "+email);
         console.log(req.body);
         const user = await findUserByUUID(user_uuid);
         if(user){ 
@@ -242,6 +245,50 @@ exports.modifyUser = async(req,res) => {
     }
 };
 
+exports.updateUserFCM = async(req,res) => {
+    const user_uuid = req.params ? req.params.reference_id : "";
+    if(Object.keys(req.body).length !== 0) {
+        console.log(req.body);
+        const user = await findUserByUUID(user_uuid);
+        if(user){ 
+            const mUser = await modifyUserDataByUUID(user_uuid,req.body);
+            if(mUser)
+            {
+                Users.findOne({
+                    where: {
+                        farmer_uuid:user_uuid
+                    },
+                    attributes: ['first_name','last_name'],
+                }).then(data => {
+                    res.status(200).json({
+                        success: true,
+                        error: false,
+                        message: data
+                    });
+                });
+            }else{
+                res.status(500).json({
+                    success: false,
+                    error: true,
+                    message: "Something wrong happened while searching users info."
+                });
+            }
+        }else{
+            return res.status(404).json({
+                success: false,
+                error: false,
+                message: "User with id: "+ user_uuid +" not found."
+            });
+        }
+    }else{
+        res.status(500).json({
+            success: false,
+            error: true,
+            message: "Missing: request payload not provided."
+        });        
+    }
+};
+
 exports.newOTP = async(req,res) => {
     const phoneNumber = req.params ? req.params.phoneNumber : null;
     if(phoneNumber){
@@ -249,12 +296,21 @@ exports.newOTP = async(req,res) => {
         if(user){
             const otpGenerated = await generateOTP();
             const createPayload = {"phone_number":phoneNumber,"otp":otpGenerated}; 
-            await createUserOtp(createPayload);
-            return res.status(200).json({
-                success: true,
-                error: false,
-                message: "Your OTP is: "+ otpGenerated +"."
-            });  
+            console.log(createPayload);
+            const emalifyResp = await createUserOtp(createPayload);
+            if(emalifyResp[0]){
+                return res.status(200).json({
+                    success: true,
+                    error: false,
+                    message: OTP_MESSAGE.replace('{0}',otpGenerated)
+                });
+            }else{
+                return res.status(200).json({
+                    success: false,
+                    error: true,
+                    message: OTP_MESSAGE.replace('{0}',otpGenerated)
+                });               
+            }
         }else{
             return res.status(404).json({
                 success: false,
@@ -417,10 +473,17 @@ const createUserExtra = async(payload) => {
 };
 
 const createUserOtp = async(payload) => {
-    console.log("size: "+payload);
-    UserOtp.upsert(payload).then(async data => {
-        await sendBulkSMS(payload);
-    });
+    const {phone_number,otp} = payload;
+    const [_obj,created] = await UserOtp.upsert(payload).catch(e => {return false;});
+    if(created){
+        const text_message = OTP_MESSAGE.replace('{0}',otp);
+        //const {status,message} = await sendSMS(phone_number,text_message);
+        const status=false;
+        //console.log(JSON.stringify({status,message,_obj}));
+        return [true,'message'];
+    }else{
+        return [false];
+    }
 };
 
 const validateUserRegistration = async(phoneNumber,otp) => {
@@ -455,11 +518,6 @@ const modifyUserDataByPhoneNumber = async(phoneNumber,payload) => {
     return true;
 };
 
-const sendBulkSMS = async(payload) => {
-    const json = payload;
-    console.log("Your OTP is "+json.otp);
-};
-
 const findUserByPhoneNumber = async(phoneNumber) => {
     const user = await Users.findOne({where:{phone_number:phoneNumber}}).catch(e => { return false; });
     if(!user) {
@@ -491,6 +549,25 @@ const deleteOtp = async(phoneNumber) => {
 const validateUserEmail = async(email) => {
     const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return emailRegexp.test(email);
+};
+
+//-.specific user info.
+exports.getUserSpecificData = async(req,res) => {
+    const { page, size} = req.query;
+    const { limit, offset } = getPagination(page,size);
+
+    Users.findAll({
+        limit,offset,
+        attributes: [[fn('concat', col('first_name'), ' ', col('last_name')), "full_name"],'farmer_uuid'],
+    }).then(data => {
+        res.status(200).json(data);
+    }).catch(err =>{
+        res.status(500).json({
+            success: false,
+            error: true,
+            message: err.message +" "+"Something wrong happened while retrieving users info."
+        });      
+    });
 };
 
 exports.findAll = async(req,res) => {
@@ -566,6 +643,14 @@ exports.welcome = async(req,res) => {
         success: true,
         error: false,
         message: "karibu growagric"
+    });
+};
+
+exports.ping = async(req,res) => {
+    res.status(200).json({
+        success: true,
+        error: false,
+        message: "heartbeat"
     });
 };
 
