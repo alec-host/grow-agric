@@ -20,10 +20,10 @@ const FinanceExtraResource = {
             })
         },
         */
-        listProperties: ['application_uuid','loan_amount','applicant_name','phone_number','reason','approved_by','createdAt'],
+        listProperties: ['applicant_name','phone_number','loan_amount','reason','approved_by','createdAt'],
         filterProperties: ['applicant_name','phone_number','approved_by'],
         editProperties: [],
-        showProperties: ['application_uuid','loan_amount','applicant_name','phone_number','reason','approved_by','createdAt'],
+        showProperties: ['applicant_name','phone_number','loan_amount','reason','approved_by','createdAt'],
         parent: financesNavigation,
         actions:{
             delete:{

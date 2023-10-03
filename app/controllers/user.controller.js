@@ -8,15 +8,17 @@ const db = require("../models");
 
 const Users = db.users;
 const UsersExtra = db.usersextra;
+const HearAboutUs = db.hearaboutus;
 const UserOtp = db.userotp;
 const Op = db.Sequelize.Op;
 const {fn, col } = db.Sequelize;
 
 const getPagination = require("./utility/pagination");
 const getPagingData = require("./utility/page.data");
-const { getAccountVerifiedCountByPhoneNumber } = require("./utility/common.controller");
+const { getAccountVerifiedCountByPhoneNumber, hearAboutPlatform } = require("./utility/common.controller");
 const { sendSMS } = require("../services/SMS");
 const { OTP_MESSAGE } = require("../constants/message.template");
+const http = require("./utility/http.handle");
 
 let refreshTokens = [];
 
@@ -24,12 +26,14 @@ exports.registerUser = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
         const {first_name,last_name,phone_number,password,confirm_password} = req.body;
         if(password == confirm_password) {
+
             const user = await findUserByPhoneNumber(phone_number);
+
             if(user){
                 return res.status(200).json({
-                    success: true,
-                    error: false,
-                    message: "User is already exists."
+                    success:false,
+                    error:false,
+                    message: "Phone number is in use"
                 });
             }else{ 
                 const hashedPassword = await encrypt(password);
@@ -39,9 +43,15 @@ exports.registerUser = async(req,res) => {
                 if(newUser[0]){
                     //-.record some data.
                     await createUserExtra({farmer_id:newUser[1].toJSON()._id,farmer_uuid:newUser[1].toJSON().farmer_uuid});
-                    const emalifyResp = await createUserOtp(createPayload);
+                    await createUserOtp(createPayload);
                     console.log('OTP '+ otpGenerated);
+
                     const {phone_number,farmer_uuid,first_name,last_name,id_number,email,home_county,gender,age,is_married,level_of_education} = newUser[1];
+
+                    const hearAboutUsPayload = {farmer_uuid:farmer_uuid,full_name:first_name+" "+last_name,phone_number:phone_number,platform:'Unspecified'};
+
+                    const resp = await http.postJsonData("http://localhost:8585/api/v1/users/hearAboutUs",hearAboutUsPayload);
+
                     return res.status(201).json({
                         success: true,
                         error: false,
@@ -92,16 +102,16 @@ exports.loginUser = async(req,res) => {
                         message: "Login successful, ACCESS TOKEN :"+ token + " REFRESH_TOKEN :" + rToken
                     }); 
                 }
-                return res.status(401).json({
+                return res.status(200).json({
                     success: false,
                     error: true,
                     message: "Invalid credentials."
                 });           
             }else{
-                res.status(404).json({
+                res.status(200).json({
                     success: false,
                     error: true,
-                    message: "User with Phone number: "+ phone_number +" not found."
+                    message: "Account does not exist."
                 });            
             }
         }catch(er)
@@ -155,6 +165,7 @@ exports.verifyByPhoneNumber = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
         const {phone_number,otp} = req.body;
         const user = await validateUserRegistration(phone_number,otp);
+        console.log(user[0]);
         if(user[0]){
             await deleteOtp(phone_number);
             res.status(200).json({
@@ -163,6 +174,7 @@ exports.verifyByPhoneNumber = async(req,res) => {
                 message: "Phone number has been verified successfully."
             }); 
         }else{
+            console.log("xxxxxxxxxx" +user[1]);
             if(user[1].includes("OTP")){
                 res.status(200).json({
                     success: false,
@@ -190,14 +202,16 @@ exports.modifyUser = async(req,res) => {
     const user_uuid = req.params ? req.params.reference_id : "";
     if(Object.keys(req.body).length !== 0) {
         const {email} = req.body;
-        console.log(req.body);
         const user = await findUserByUUID(user_uuid);
+        const {platform} = await hearAboutPlatform(user.farmer_uuid);
+        console.log("XXXXXXXXXXXXXXXXXXXXXX "+platform);
         if(user){ 
             emailValidatationStatus = await validateUserEmail(email);
             if(emailValidatationStatus){
                 const mUser = await modifyUserDataByUUID(user_uuid,req.body);
-                if(mUser)
-                {
+                if(mUser){
+                    //-.profile update tracking.
+                    await updateUserExtra(user_uuid,{farmer_uuid:user_uuid,platform:platform,county:user.home_county});
                     Users.findOne({
                         where: {
                             farmer_uuid:user_uuid
@@ -206,13 +220,14 @@ exports.modifyUser = async(req,res) => {
                                     'farmer_uuid','phone_number',
                                     'gender','id_number',
                                     'age','is_married','level_of_education',
-                                    'year_of_experience','home_county',
-                                    'phone_number','email'],
+                                    'year_of_experience','home_county','email'],
                     }).then(data => {
+                        const {first_name,last_name,farmer_uuid,phone_number,gender,id_number,age,is_married,level_of_education,year_of_experience,home_county,email} = data;
+                        const newPayload = {first_name,last_name,farmer_uuid,phone_number,gender,id_number,age,is_married,level_of_education,year_of_experience,home_county,email,platform};
                         res.status(200).json({
                             success: true,
                             error: false,
-                            message: data
+                            message: newPayload
                         });
                     });
                 }else{
@@ -248,7 +263,6 @@ exports.modifyUser = async(req,res) => {
 exports.updateUserFCM = async(req,res) => {
     const user_uuid = req.params ? req.params.reference_id : "";
     if(Object.keys(req.body).length !== 0) {
-        console.log(req.body);
         const user = await findUserByUUID(user_uuid);
         if(user){ 
             const mUser = await modifyUserDataByUUID(user_uuid,req.body);
@@ -329,23 +343,33 @@ exports.newOTP = async(req,res) => {
 
 exports.changePassword = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
-        const {user_uuid,password,confirm_password} = req.body;
+        const {user_uuid,password,confirm_password,otp} = req.body;
         const user = await findUserByUUID(user_uuid);
         if(user){
             if(password == confirm_password){
                 const hashedPassword = await encrypt(password);
-                const user = await modifyUserDataByUUID(user_uuid,{password:hashedPassword});
-                if(user){
+                const modified_user = await modifyUserDataByUUID(user_uuid,{password:hashedPassword});
+                const generated_otp = await getUserOtpGenerated(user.phone_number);
+                console.log("XXXXXXXXX "+generated_otp +" input otp  "+otp+"    "+user.phone_number);
+                if(generated_otp && generated_otp == otp){
+                    if(modified_user){
+                        return res.status(200).json({
+                            success: true,
+                            error: true,
+                            message: "Password has been changed."
+                        });                     
+                    }else{
+                        return res.status(404).json({
+                            success: false,
+                            error: true,
+                            message: "User with id: "+ user_uuid +" not found."
+                        });                    
+                    }
+                }else{
                     return res.status(200).json({
                         success: true,
                         error: true,
-                        message: "Password has been changed."
-                    });                     
-                }else{
-                    return res.status(404).json({
-                        success: false,
-                        error: true,
-                        message: "User with id: "+ user_uuid +" not found."
+                        message: "The verification code provided is Invalid"
                     });                    
                 }
             }else{
@@ -400,7 +424,7 @@ exports.token = async(req,res) => {
     }
 };
 
-exports.accountStatus = async(req,res) => {
+exports.accountVerified = async(req,res) => {
     const phoneNumber = req.params ? req.params.phoneNumber : null;
     if(phoneNumber){
         const user = await findUserByPhoneNumber(phoneNumber);
@@ -430,27 +454,54 @@ exports.accountStatus = async(req,res) => {
 exports.getUserProfile = async(req,res) => {
     const phoneNumber = req.params ? req.params.phoneNumber : null;
     if(phoneNumber){
-        Users.findOne({
-            where: {
-                phone_number: phoneNumber
-            },
-            attributes: ['first_name','last_name',
-                        'farmer_uuid','phone_number',
-                        'gender','id_number',
-                        'age','is_married','level_of_education',
-                        'year_of_experience','home_county',
-                        'phone_number','email'],
-        }).then(data => {
-            if(data != null){
-                res.status(200).json({success:true,error:false,message:data});
-            }else{
-                res.status(404).json({
-                    success: false,
-                    error: true,
-                    message: "User with id: "+ phoneNumber +" not found."
-                }); 
-            }
-        });
+        const user = await findUserByPhoneNumber(phoneNumber);
+        if(user){
+            const platform = await hearAboutPlatform(user.farmer_uuid);
+            Users.findOne({
+                where: {
+                    phone_number: phoneNumber
+                },
+                attributes: ['first_name','last_name',
+                            'farmer_uuid','phone_number',
+                            'gender','id_number',
+                            'age','is_married','level_of_education',
+                            'year_of_experience','home_county',
+                            'email'],
+            }).then(data => {
+                if(data != null){
+                    const {first_name,last_name,farmer_uuid,phone_number,gender,id_number,age,is_married,level_of_education,year_of_experience,home_county,email} = data;
+                    const profile = 
+                            {
+                                first_name:first_name,
+                                last_name:last_name,
+                                farmer_uuid:farmer_uuid,
+                                phone_number:phone_number,
+                                gender:gender,
+                                id_number:id_number,
+                                age:age,
+                                is_married:is_married,
+                                level_of_education:level_of_education, 
+                                year_of_experience:year_of_experience,
+                                home_county:home_county,
+                                email:email,
+                                platform:platform
+                            };
+                    res.status(200).json({success:true,error:false,message:profile});
+                }else{
+                    res.status(404).json({
+                        success: false,
+                        error: true,
+                        message: "User with id: "+ phoneNumber +" not found."
+                    }); 
+                }
+            });
+        }else{
+            return res.status(404).json({
+                success: false,
+                error: true,
+                message: "User with phone: "+ phoneNumber +" not found."
+            });               
+        }
     }else{
         res.status(500).json({
             success: false,
@@ -458,6 +509,49 @@ exports.getUserProfile = async(req,res) => {
             message: "Missing: request params not provided."
         });  
     }
+};
+
+exports.getUserExtraProfileStatus = async(req,res) => {
+    const phone_number = req.params ? req.params.phoneNumber : null;
+    if(phone_number){
+        const user = await findUserByPhoneNumber(phone_number);
+        if(user){
+            const platform = await getUserIndicatedHearAboutUsPlatform(user.farmer_uuid);
+            if(platform == 1){
+                res.status(200).json({
+                    success: true,
+                    error: false,
+                    message: platform
+                });                 
+            }else{
+                res.status(200).json({
+                    success: false,
+                    error: false,
+                    message: platform
+                });    
+            }
+        }else{
+            res.status(404).json({
+                success: false,
+                error: true,
+                message: "User with mobile: "+ phone_number +" not found."
+            });             
+        }
+    }else{
+        res.status(500).json({
+            success: false,
+            error: true,
+            message: "Missing: request params not provided."
+        });         
+    }
+};
+
+const getUserIndicatedHearAboutUsPlatform = async(user_uuid) => {
+    const user = await HearAboutUs.findOne({where:{farmer_uuid:user_uuid}}).catch(e => { return 0; });
+    if(user.platform == 'Unspecified') {
+        return 0;
+    }
+    return 1;
 };
 
 const createUser = async(payload) => {
@@ -470,6 +564,14 @@ const createUser = async(payload) => {
 
 const createUserExtra = async(payload) => {
     UsersExtra.create(payload);
+};
+
+const updateUserExtra = async(user_uuid,payload) => {
+    const isUpdated = await UsersExtra.update(payload,{ where:{farmer_uuid:user_uuid}}).catch(e => { return false; });
+    if(!isUpdated){
+        return false;
+    }
+    return true;
 };
 
 const createUserOtp = async(payload) => {

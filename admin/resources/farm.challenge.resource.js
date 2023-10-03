@@ -13,6 +13,10 @@ const FarmChallengeResource = {
     resource: FarmChallenge,
     options: {
         parent: farmsNavigation,
+        listProperties: ['farmer_uuid','full_name','phone_number','challenges_faced','other_challenges'],
+        filterProperties: ['farmer_uuid','full_name','phone_number'],
+        editProperties: [],
+        showProperties: ['farmer_uuid','full_name','phone_number','challenges_faced','other_challenges'],
         actions: {
             PDF: {
                 actionsType: 'resource',

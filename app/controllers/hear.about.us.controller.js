@@ -8,10 +8,11 @@ const Op = db.Sequelize.Op;
 
 module.exports.hearAboutUs = async(req,res) =>{
     if(Object.keys(req.body).length !== 0){
-        const {farmer_uuid,full_name,phone_number,media_channel} = req.body;
+        const {farmer_uuid,full_name,phone_number,platform} = req.body;
+        console.log(req.body);
         const user = await common.findUserByUUID(farmer_uuid);
         if(user){
-            const payload = {farmer_uuid,full_name,phone_number,media_channel};
+            const payload = {farmer_uuid,full_name,phone_number,platform};
             const resp = await create(payload);
             if(resp){
                 return res.status(201).json({
@@ -44,7 +45,7 @@ module.exports.hearAboutUs = async(req,res) =>{
 };
 
 const create = async(payload) => {
-    const newEntry = await HearAboutUs.create(payload);
+    const newEntry = await HearAboutUs.upsert(payload);
     if(!newEntry) {
         return [false,"Attention: adding an entry has failed"];
     }

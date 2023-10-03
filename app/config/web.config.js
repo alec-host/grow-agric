@@ -35,7 +35,7 @@ const SUPER_ADMIN = {
 const adminBro = new AdminBro(AdminBroOptions);
 
 const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
-    authenticate: async (email, password) => {
+    authenticate: async (email,password) => {
       const user = await findUserByEmail(email);
       if(user){
         const result = await authenticateWebPortalUser(email,password);
@@ -57,9 +57,10 @@ const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
 
   const router2 = AdminBroExpress.buildRouter(adminBro);
 
-  app.use(express.static("./public"));
+  app.use(express.static('./public'));
   app.use(adminBro.options.rootPath,router);
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   module.exports = {
     app,

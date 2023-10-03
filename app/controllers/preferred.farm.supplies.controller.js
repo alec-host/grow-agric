@@ -48,9 +48,10 @@ exports.AddFarmSupplies = async(req,res) => {
 };
 
 const createFarmPreferredSupplies = async(payload) => {
-    const newFarmSupplies = await PreferredFarmSupplies.create(payload);
-    if(!newFarmSupplies) {
-        return [false,"Attention: add preferred supplies has failed"];
+    const [_obj,created] = await PreferredFarmSupplies.upsert(payload).catch(e => {return false;});
+    if(created == true || created == false){
+        return [true,'created/updated'];
+    }else{
+        return [false,'something wrong has happened'];
     }
-    return [true,newFarmSupplies];
 };

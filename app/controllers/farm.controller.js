@@ -32,7 +32,7 @@ module.exports.AddFarm = async(req,res) => {
                         insurer:insurer
                     };        
             const newFarm = await createFarm(createPayload);
-            const farmChallengePayload = {farmer_uuid:farmer_uuid,phone_number:phone_number,challenges_faced:challenges_faced,other_challenges:other_challenges};
+            const farmChallengePayload = {full_name:user.first_name+' '+user.last_name,farmer_uuid:farmer_uuid,phone_number:phone_number,challenges_faced:challenges_faced,other_challenges:other_challenges};
             if(newFarm[0]){
                 await http.postJsonData("http://localhost:8585/api/v1/users/addChallenge",farmChallengePayload);
                 return res.status(201).json({

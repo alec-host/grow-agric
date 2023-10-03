@@ -13,5 +13,11 @@ import Component6 from '../admin/components/create-portal-user-component'
 AdminBro.UserComponents.Component6 = Component6
 import Component7 from '../admin/components/profile-component'
 AdminBro.UserComponents.Component7 = Component7
-import Component8 from '../admin/components/dashboard.component'
+import Component8 from '../admin/components/edit-learn-course-component'
 AdminBro.UserComponents.Component8 = Component8
+import Component9 from '../admin/components/create-learn-course-component'
+AdminBro.UserComponents.Component9 = Component9
+import Component10 from '../admin/components/custom-chat-view-component'
+AdminBro.UserComponents.Component10 = Component10
+import Component11 from '../admin/components/dashboard.component'
+AdminBro.UserComponents.Component11 = Component11

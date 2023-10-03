@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
             defaultValue: "Nil"
         },
-        channel: {
+        platform: {
             type: DataTypes.STRING(10),
             allowNull: true,
             defaultValue: "Nil"

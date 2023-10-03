@@ -13,7 +13,8 @@ module.exports = (sequelize, Sequelize) => {
         farmer_uuid:{
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
-            allowNull: true 
+            allowNull: true, 
+            unique: 'uniqueTag'
         },
         full_name:{
             type: DataTypes.STRING(100),
@@ -23,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.STRING(15),
             allowNull: false           
         },    
-        media_channel:{
+        platform:{
             type: DataTypes.STRING(35),
             allowNull: false           
         },                    

@@ -26,7 +26,8 @@ module.exports = (sequelize, Sequelize) => {
         },
         farmer_uuid:{
             type: DataTypes.STRING(65),
-            allowNull: true,
+            allowNull: false,
+            unique: "farmer_uuid",
             Comment: "Unormalize: column added to avoid use of joins."           
         },       
         challenges_faced:{

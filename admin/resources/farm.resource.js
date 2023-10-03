@@ -13,6 +13,10 @@ const FarmResource = {
     resource: Farm,
     options: {
         parent: farmsNavigation,
+        listProperties: ['farm_uuid','county','sub_county','item_farmed','number_of_employees','bird_house_capacity','mortality_rate','is_insured','createdAt'],
+        filterProperties: ['county','sub_county','item_farmed','is_insured','createdAt'],
+        editProperties: [],
+        showProperties: ['farm_uuid','county','sub_county','item_farmed','number_of_employees','bird_house_capacity','mortality_rate','is_insured','createdAt'],
         actions: {
             PDF: {
                 actionsType: 'resource',

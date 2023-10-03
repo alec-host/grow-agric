@@ -37,6 +37,18 @@ const sequelize = new Sequelize(
   db.totalfundsdisbursed = require("./total.funds.disbursed")(sequelize,Sequelize);
   db.hearaboutus = require("./hear.about.us.model")(sequelize,Sequelize);
 
+  db.learnmodules = require("./learn.module.model")(sequelize,Sequelize);
+  db.learncourses = require("./learn.course.model")(sequelize,Sequelize);
+
+  db.chatrooms = require("./chat.room.model")(sequelize,Sequelize);
+  db.chatmessages = require("./chat.room.message.model")(sequelize,Sequelize);
+
+  db.learnprogress = require("./learning.progress.model")(sequelize,Sequelize);
+  db.invites = require("./invite.model")(sequelize,Sequelize);
+
+  db.farmrecordbooks = require("./farm.record.book.model")(sequelize,Sequelize);
+  db.financemanifest = require("./finance.manifest.model")(sequelize,Sequelize);
+
   //-.relationship btwn users & extras.
   db.users.hasOne(db.usersextra,{foreignKey:"farmer_id",sourceKey:"_id"});
   db.usersextra.belongsTo(db.users,{foreignKey:"farmer_id",sourceKey:"_id"});
@@ -58,5 +70,8 @@ const sequelize = new Sequelize(
   //-.relationship btwn users & sales.
   db.users.hasMany(db.sales,{foreignKey:"farmer_id",sourceKey:"_id"});
   db.sales.belongsTo(db.users,{foreignKey:"farmer_id",sourceKey:"_id"});
+  //-.relation btwn modules & courses.
+  db.learnmodules.hasMany(db.learncourses,{foreignKey:"module_id",sourceKey:"_id"});
+  db.learncourses.belongsTo(db.learnmodules,{foreignKey:"module_id",sourceKey:"_id"});
 
   module.exports = db;

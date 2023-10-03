@@ -16,7 +16,8 @@ module.exports = (sequelize, Sequelize) => {
         },
         farmer_uuid:{
             type: DataTypes.STRING(65),
-            allowNull: true,
+            allowNull: false,
+            unique: "farmer_uuid"
         }, 
         chick_supplier:{
             type: DataTypes.STRING(35),

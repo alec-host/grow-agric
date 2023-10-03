@@ -52,7 +52,7 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: "Unspecified"            
         },
         is_married:{
-            type: DataTypes.ENUM("Unspecified","Married","Single"),
+            type: DataTypes.ENUM("Unspecified","Divorced","Married","Single"),
             defaultValue: "Unspecified"          
         },
         year_of_experience:{

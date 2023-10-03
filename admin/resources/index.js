@@ -1,4 +1,5 @@
 const AdminBro = require('admin-bro');
+
 const db = require("../../app/models");
 
 const FarmResource = require('./farm.resource');
@@ -16,6 +17,11 @@ const FinanceExtraResource = require('./finance.log.resource');
 const SaleResource = require('./sale.resource');
 const PortalUserResource = require('./portal.user.resources');
 const UserProfileResource = require('./profile.user.resource');
+const LearnModuleResource = require('./learn.module.resource');
+const LearnCourseResource = require('./learn.course.resource');
+const ChatRoomResource = require('./chat.room.resource');
+const InviteResource = require('./invite.resource');
+const FarmBookResource = require('./farm.record.book.resource');
 
 const User = db.users;
 const Farm = db.farms;
@@ -23,11 +29,16 @@ const FarmChallenge = db.farmchallenges;
 const Finance = db.finances;
 const FinanceExtra = db.financeextras;
 const Sale = db.sales;
+const ChatRoom = db.chatrooms;
+const Invite = db.invites;
 
 const nav = {
     name: 'TEST PANEL',
     icon: 'Building',
 }; 
+
+
+console.log(InviteResource);
 
 const UserResourceTest = {
     resource: User,
@@ -103,12 +114,17 @@ const AdminBroOptions = {
         {resource: FinanceFarmingToStartResource.resource,options:FinanceFarmingToStartResource.options,sort:FinanceFarmingToStartResource.sort},
         {resource: FinanceFarmingStartsResource.resource,options:FinanceFarmingStartsResource.options,sort:FinanceFarmingStartsResource.sort},
         {resource: FinanceExtraResource.resource,options:FinanceExtraResource.options,sort:FinanceExtraResource.sort},
+        {resource: LearnModuleResource.resource,options:LearnModuleResource.options,sort:LearnModuleResource.sort},
+        {resource: LearnCourseResource.resource,options:LearnCourseResource.options,sort:LearnCourseResource.sort},
+        {resource: FarmBookResource.resource,options:FarmBookResource.options,sort:FarmBookResource.sort},
         {resource: UserResource.resource,options:UserResource.options,sort:UserResource.sort},
         {resource: FarmResource.resource,options:FarmResource.options,sort:FarmResource.sort},
         {resource: FarmChallengeResource.resource,options:FarmChallengeResource.options,sort:FarmChallengeResource.sort},
+        {resource: ChatRoomResource.resource,options:ChatRoomResource.options,sort:ChatRoomResource.sort},
         {resource: SaleResource.resource,options:SaleResource.options,sort:SaleResource.sort},
         {resource: PortalUserResource.resource,options:PortalUserResource.options,sort:PortalUserResource.sort},
         {resource: UserProfileResource.resource,options:UserProfileResource.options,sort:UserProfileResource.sort},
+        {resource: InviteResource.resource,options:InviteResource.options,sort:InviteResource.sort},
         {resource: UserResourceTest.resource,options:UserResourceTest.options},
         ],
     rootPath: '/admin',
@@ -119,6 +135,10 @@ const AdminBroOptions = {
         companyName: 'GrowAgric',
         softwareBrothers: false ,
         favicon: '/images/favicon.png',
+    },
+    icons: {
+        // Specify the icon library you want to use
+        iconSet: 'fontawesome',
     },
     locale: {
         translations: {
@@ -258,7 +278,20 @@ const AdminBroOptions = {
                             noRecordsInResource: 'No Farm\'s data to display.'
                         },
                     },
-                    Sale,
+                    invites:{
+                        messages: {
+                            noRecordsInResource: 'No Record[s] to display.'
+                        }                       
+                    },
+                    ChatRoom,
+                    chat_rooms:{
+                        properties: {
+                            full_name: 'NAME'
+                        },
+                        messages: {
+                            noRecordsInResource: 'No Chat\'s data to display.'
+                        }, 
+                    },
                     sales: {
                         properties: {
                             sales_uuid: 'UUID',

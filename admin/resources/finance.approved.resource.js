@@ -15,7 +15,7 @@ const FinanceApprovedResource = {
         href: ({ h, resource }) => {
             return h.resourceActionUrl({
                 resourceId: resource.decorate().id(),
-                search: '?filters.application_status=APPROVED&step=4',
+                search: '?filters.application_status=LOAN APPROVED&step=4',
             })
         },        
         listProperties: ['applicant_name','phone_number','loan_amount','chick_cost','feed_cost','brooding_cost','vaccine_medicine_cost','financial_sponsor','application_status','date_required','createdAt'],

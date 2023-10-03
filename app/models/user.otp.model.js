@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false 
         },
         otp:{
-            type: DataTypes.INTEGER(7),
+            type: DataTypes.STRING(7),
             allowNull: false,
             defaultValue: 0
         },

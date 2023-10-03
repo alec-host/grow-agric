@@ -47,9 +47,10 @@ exports.AddFarmChallenge = async(req,res) => {
 };
 
 const createFarmChallenge = async(payload) => {
-    const newChallenge = await FarmChallenge.create(payload);
-    if(!newChallenge) {
-        return [false,"Attention: add farm challenge has failed"];
+    const [_obj,created] = await FarmChallenge.upsert(payload).catch(e => {return false;});
+    if(created == true || created == false){
+        return [true,'created/updated'];
+    }else{
+        return [false,'something wrong has happened'];
     }
-    return [true,newChallenge];
 };

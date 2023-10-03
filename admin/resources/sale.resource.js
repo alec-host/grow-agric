@@ -5,7 +5,7 @@ const Sale = db.sales;
 
 const salessNavigation = {
     name: 'Sales Information',
-    icon: 'Market',
+    icon: 'Store',
 };
 
 const SaleResource = {

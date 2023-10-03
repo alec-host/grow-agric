@@ -3,6 +3,9 @@ const db = require("../../models");
 const User = db.users;
 const Farm = db.farms;
 const AdminUser = db.portalusers;
+const HearAboutUs = db.hearaboutus;
+const FinanceManifest = db.financemanifest;
+
 const Op = db.Sequelize.Op;
 
 module.exports.findUserByUUID = async(userUUID) => {
@@ -49,3 +52,38 @@ module.exports.modifyFarmByFarmerUUID = async(userUUID,payload) => {
     }
     return true;
 };
+
+module.exports.hearAboutPlatform = async(farmer_uuid) => {
+    let hearAbout = {};
+    hearAbout = await HearAboutUs.findOne({where:{farmer_uuid:farmer_uuid},attributes: ['platform'],}).catch(e => {return false;});
+    console.log("ssssssssssss "+hearAbout.platform);
+    if(!hearAbout.platform){
+        return 'Unspecified';
+    }
+    return hearAbout.platform;
+};
+
+
+module.exports.logFinanceRequest = async(payload) => {
+    const newLog = await FinanceManifest.create(payload);
+};
+
+
+module.exports.hasExistingLoan = async(farmer_uuid) => {
+    const exist = await FinanceManifest.findOne({where:{farmer_uuid:farmer_uuid}}).catch(e => {return [false,null];});
+    if(!exist){
+        return [false,null];
+    }
+    return [true,exist];
+};
+
+/*
+
+const createFarm = async(payload) => {
+    const newFarm = await Farm.create(payload);
+    if(!newFarm) {
+        return [false,"Attention: add farm has failed"];
+    }
+    return [true,newFarm];
+};
+*/

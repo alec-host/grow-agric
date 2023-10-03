@@ -1,0 +1,31 @@
+.message-bubble {
+    background-color: #007bff;
+    color: white;
+    border-radius: 15px;
+    padding: 10px 15px;
+    max-width: 60%; /* Adjust as needed */
+    position: relative;
+  }
+  
+  .message-bubble::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+  
+  .message-bubble.sent::before {
+    top: 50%;
+    right: -10px;
+    border-width: 10px 0 10px 10px;
+    border-color: transparent transparent transparent #007bff;
+  }
+  
+  .message-bubble.received::before {
+    top: 50%;
+    left: -10px;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #f0f0f0 transparent transparent;
+  }
+  

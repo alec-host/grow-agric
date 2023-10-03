@@ -1,11 +1,8 @@
-import { Box, Header, Button, Label, Input } from '@admin-bro/design-system';
+import { Box, Button, Label, Input } from '@admin-bro/design-system';
 import { ActionProps } from 'admin-bro';
 import React,{FormEvent} from 'react';
 import { ApiClient } from 'admin-bro';
 
-/*
-import axios from 'axios';
-*/
 const CreateNewUserAction = (props : ActionProps) => {
     const handleOnSubmit = (event:FormEvent) => {
         const inputFname = document.getElementById("first_name");
@@ -22,10 +19,9 @@ const CreateNewUserAction = (props : ActionProps) => {
             actionName:'new',
             baseURL:'http://localhost:8590/admin/',
             method:'POST',
-            headers: { 'Content-Type': 'application/json',},
+            headers: {'Content-Type': 'application/json'},
             data: JSON.stringify({first_name:inputFname.value,last_name:inputLname.value,email:inputEmail.value,role:inputRole.value,password:inputPass.value}),
             }).then(results => {
-                console.log(results);
                 inputFname.value="";
                 inputLname.value=""
                 inputEmail.value="";
@@ -33,7 +29,7 @@ const CreateNewUserAction = (props : ActionProps) => {
                 inputPass.value="";
             })
             .catch(err =>{
-            console.log("error:     "+err);
+                console.log("error:     "+err);
             });
             console.log("saving the data onto the db");
             event.preventDefault();

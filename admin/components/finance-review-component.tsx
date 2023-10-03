@@ -35,7 +35,7 @@ const LoanReviewAction = (props : ActionProps) => {
       url:definedURL
     }).then(results => {
       const itemFarmed = document.getElementById('item_farmed');
-      itemFarmed.textContent = results.data.records[0].params.item_farmed;
+      itemFarmed.textContent = results.data.records[0].params.item_farmed != null ? results.data.records[0].params.item_farmed: "Nil";
       const location = document.getElementById('location');
       location.textContent = results.data.records[0].params.county+' '+results.data.records[0].params.sub_county +' '+ results.data.records[0].params.ward;
       const spanMortality_rate = document.getElementById('mortality_rate');
@@ -81,7 +81,7 @@ const LoanReviewAction = (props : ActionProps) => {
   },[]);
 
 
-  const logHandle = (reason) => {
+  const logFinancialRequestReview = (reason) => {
     const api = new ApiClient();
     api.resourceAction({
     resourceId:'Logs',
@@ -89,7 +89,15 @@ const LoanReviewAction = (props : ActionProps) => {
     baseURL:'http://localhost:8590/admin/',
     method:'POST',
     headers: { 'Content-Type': 'application/json',},
-    data: JSON.stringify({application_id:data._id,application_uuid:data.application_uuid,reason:reason,approved_by:currentAdmin[0].names}),
+    data: JSON.stringify({
+        application_id:data._id,
+        application_uuid:data.application_uuid,
+        applicant_name:data.applicant_name,
+        phone_number: data.phone_number,
+        loan_amount: data.loan_amount,
+        reason: reason,
+        approved_by: currentAdmin[0].names
+      }),
     }).then(results => {
         console.log(results);
     })
@@ -116,7 +124,7 @@ const LoanReviewAction = (props : ActionProps) => {
   });
   
   const handleOnSubmit = (event:FormEvent) => {
-    const inputReasonText = document.getElementById("message");
+    const inputReasonText = document.getElementById("remark");
     const inputRecordText =  document.getElementById("record");
     const radioOptionText = document.querySelector( 'input[name="optionReview"]:checked');
     const serverMessage = document.getElementById("server_message");
@@ -126,44 +134,48 @@ const LoanReviewAction = (props : ActionProps) => {
      serverMessage.textContent="";
      event.preventDefault();
     }else{
+      let applicationStatus = data.application_status;
       const formData = new FormData();
       const definedURL = 'http://localhost:8590/admin/api/resources/FinanceFilteredByPendingReviewStatus/records/' + data._id + '/edit';
       if(stepCnt == '0'){
         formData.append('application_status',radioOptionText.value);  
       }else{
         let statusValue;
-        if(stepCnt == '0') {
+        if(applicationStatus == 'PENDING REVIEW') {
           statusValue = 'IN REVIEW';
-        }else if(stepCnt == '1'){
+        }else if(applicationStatus == 'IN REVIEW'){
           statusValue = 'FINALIZING';
-        }else if(stepCnt == '2'){
+        }else if(applicationStatus == 'FINALIZING'){
           statusValue = 'PO COMPLETED';
-        }else if(stepCnt == '3'){
+        }else if(applicationStatus == 'PO COMPLETED'){
           statusValue = 'LOAN APPROVED';
-        }else if(stepCnt == '4'){
+        }else if(applicationStatus == 'LOAN APPROVED'){
           statusValue = 'FARMING ABOUT TO START';
-        }else if(stepCnt == '5'){
+        }else if(applicationStatus == 'ARMING ABOUT TO START'){
           statusValue = 'FARMING STARTS';
         }
         console.log('inside ifelse: '+statusValue+ '  ' +stepCnt);
         formData.append('application_status',statusValue);
-      }
-      axios({
-        method:'post',
-        maxBodyLength:Infinity,
-        url:definedURL,
-        data:formData
-      })
-      .then(function (response) {
-        const checkedOpt = document.getElementsByName("optionReview");
-        for(let i=0;i<checkedOpt.length;i++) {
-          checkedOpt[i].checked = false;
-        }
-        serverMessage.textContent=response.data.notice.message;
-        console.log(response.data.notice);
-        logHandle(inputReasonText.value);
+        var remarks = inputReasonText.value;
+        
+        axios({
+          method:'post',
+          maxBodyLength:Infinity,
+          url:definedURL,
+          data:formData
+        })
+        .then(function (response) {
+          const checkedOpt = document.getElementsByName("optionReview");
+          for(let i=0;i<checkedOpt.length;i++) {
+            checkedOpt[i].checked = false;
+          }
+          serverMessage.textContent=response.data.notice.message;
+          console.log(response.data.notice);
+          console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy "+remarks);
+          logFinancialRequestReview(remarks);
 
-      });
+        });
+      }
       inputReasonText.value = "";
       event.preventDefault();
     }
@@ -182,8 +194,8 @@ const LoanReviewAction = (props : ActionProps) => {
             <div style={{height:"10px"}}/>
             <Label htmlFor="message">Any remarks</Label>
             <TextArea
-              id="message"
-              name="message"
+              id="remark"
+              name="remark"
               fontsize="lg"
               rows={4} 
               cols={55}

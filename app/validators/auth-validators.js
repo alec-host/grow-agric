@@ -21,7 +21,14 @@ module.exports.registrationValidator = [
         .custom(async(phone_number) => {
             const exists = await User.findOne({where:{phone_number}}).catch(e => { return false; });
             if(exists){
-                throw new Error("Attention: phone number is in use.");
+                //throw new Error("Attention: phone number is in use.");
+                (req, res,) => {
+                    return res.status(200).json({
+                        success: false, 
+                        error: true,
+                        message: "Attention: phone number is in use.",
+                    });
+                }
             }
         }),
     body("password")
@@ -39,7 +46,14 @@ module.exports.registrationValidator = [
         .custom(async(value,{req}) => {
             const outcome = (value === req.body.password);
             if(!outcome) {
-                throw new Error("Attention: confirm password does not match provided password.");
+                //throw new Error("Attention: confirm password does not match provided password.");
+                (req, res, next) => {
+                    return res.status(200).json({
+                        success: false, 
+                        error: true,
+                        message: "Attention: confirm password does not match provided password.",
+                    });
+                }
             }
         }),
     (req, res, next) => {
@@ -97,10 +111,24 @@ module.exports.verifyPhoneNumberValidator = [
             const user = await UserOtp.findOne({where:{phone_number:phone_number}}).catch(e => { return false; });
             const output = (value.toString() === user.otp.toString());
             if(!user) {
-                throw new Error("No OTP has been set.");
+                //throw new Error("No OTP has been set.");
+                (req, res, next) => {
+                    return res.status(200).json({
+                        success: false, 
+                        error: true,
+                        message: "No OTP has been set.",
+                    });
+                }
             }
             if(output == false) {
-                throw new Error("The OTP provided is Invalid.");
+                //throw new Error("The OTP provided is Invalid.");
+                (req, res, next) => {
+                    return res.status(200).json({
+                        success: false, 
+                        error: true,
+                        message: "The OTP provided is Invalid.",
+                    });
+                }
             }
         }),
     (req, res, next) => {
@@ -136,7 +164,14 @@ module.exports.changePasswordValidator = [
         .custom(async(value,{req}) => {
             const outcome = (value === req.body.password);
             if(!outcome) {
-                throw new Error("Attention: confirm password does not match provided password.");
+                //throw new Error("Attention: confirm password does not match provided password.");
+                (req, res, next) => {
+                    return res.status(200).json({
+                        success: false, 
+                        error: true,
+                        message: "Attention: confirm password does not match provided password.",
+                    });
+                }
             }
         }),
     (req, res, next) => {
