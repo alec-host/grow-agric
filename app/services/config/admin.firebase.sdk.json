@@ -1,13 +1,13 @@
 {
     "type": "service_account",
-    "project_id": "growagric-fadfe",
-    "private_key_id": "d39d1f128a7119ea5f14db5132455a0e5978ef42",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCYXqKb8D/i4YUw\n/ZzQUF1OeZhI43Z/m+Dtk8jey76TKb2Yufk0eS/Txdxex1yFZOeVjYr9NDYmWfnD\nPbJxfbHZohTqfPIJ2VsDg0pVo8DdFHIa96PrvfNSiAkEPgZO0IVWkBAD9kezSK/y\nAEilT626MJm7ja/f66bRsWOhcUcvyPKtbyMKbAnKUNj3NINc7mQ9DrT/+dlyZhpE\nC7xyG9kSXjA5AM4CB2a6o6FMOJN4cs5/l0tm7YQTYu/o0moEvWC1wQbtJMLO3dSK\niolrBgo/l23FL1ZtTbC2+Ny0fpQHRKfGF8oV3x4jb47Rpp1PRvXg3KXULBWu01T9\nfbshNGAXAgMBAAECggEAKHJurgBvpRWCmsen+fBrZGqIz0h6a1OAuPBTETl6pGwf\nJUyw54oH9Sp/3jUDzXFEvIFvVNmoSjP2Riq5lMDuFjydWsXCJnUpYNxYPjWS+9zy\nkVANloW88rqj0hl46TEXRCxH5BVbYS85bX8/yYpGLre6B3yMJF/Uz7NMJE4CvJ8t\nUgZOQY6bJEHysrRIGSzPB0qbABBbz1Z7Qw+l8keg4mr+++yzK0khbE7Rt8dIGFc4\nGHOE1CcD+++/0BFpH1SbT8f0yBkRz4//INtiXwcjrVhuClrorv1k2zqbPOwWCAPF\nqDdspXPpTb3KRIqHchg4yU6/DCxufYwl3ptGVfmVyQKBgQDKJ4U9JY1wcK1TMR8E\nJpL6P3JFFYy/gFriIqi2UjwYCMJs1iu0ecr8Bfnogu9euFBR44jl9FMyHDv/tJyj\nw2ECGZFPUoQzlJ6UcOKAxkeoCygc67FXkiqpfGxbEpNCMqChquU/D6FcA5vTYtth\n8yz/rLoVUF1Biv/5+M/F++pYBQKBgQDA9GaXICx55+Obmfudpr0AikspMw4WWEBN\nhK+pFNvO1vXnCsgLxhCVpyLbV+uTQckZry1LRjHXI3ajsAy7Ims1LmC14ayc0Kdd\nZnoPaAz/F0hQngdj/rPIosjNZKe4Auh70+48ugmvUsyQ09TPyFnmpFSXRTPWr5xF\nPlEXR/0eawKBgDlxt4Pjquh7rFUKjVTBnVxtMQx+jitQzwKZdLWyco8l1hHVXj//\np/WrwRMYOesBlxld/eXSYt3Hdik4apaCi4tsNoWC3jxGDDYESejr7yrKWNC3DQLk\nbykQST4r7hqOhmTKSjB8QY8DG4GbAto3nt7cd1hdKNLaK9kdofURm8r9AoGAN3CB\nYX6fCM+1t+mAQAW+XD9f5RCERatJnnw3NG+H0GA2+xE/9RINhdIl07vpNcA7FaQd\ncXlTrKrF1bYpkkMLZpZSty+GNvBEhjOBcpfE1C5OWsts+DAgW89ZvpnjDp3XSmzU\nEKKrUbKKkDos9R5tpjUlEOmTQWXnkoWbKwNGGM0CgYBoSeORfzx+3H8NbJjfbjxF\nxN+9PxN30eqqadt7h0UjSQ/MiJ3QWyaoEsEad+jyiUkPoEB0+JSfsJ5mh//BYZ0W\nJabeW5tvd3Ib8PAFgyuYdnWLl+MKhDT0Kxy138TX7SaypGTbdSwdeES6u/tAXgtZ\n7jIu6YbMbZwGiRQzv7qHWA==\n-----END PRIVATE KEY-----\n",
-    "client_email": "firebase-adminsdk-zceme@growagric-fadfe.iam.gserviceaccount.com",
-    "client_id": "114894506192262604309",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-zceme%40growagric-fadfe.iam.gserviceaccount.com",
+    "project_id": "xxxxxxxxxxxxxxxxxxxxxxxx",
+    "private_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "private_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "client_email": "fxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "client_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "auth_uri": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "token_uri": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "auth_provider_x509_cert_url": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "client_x509_cert_url": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
     "universe_domain": "googleapis.com"
   }  
