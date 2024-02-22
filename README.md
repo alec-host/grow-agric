@@ -5,12 +5,12 @@ The project contains the frontend - dashboard & the backend APIs.
 - Backend APIs
 	Developed using Node Express.
 	
-	Codebase located in _app_/
+	Codebase located in **app**/
    
 - Dashboard
 	Developed using AdminBro - an auto generated panel for Node.js application. 
 	
-	Codebase located in the root directory _grow-agric_/
+	Codebase located in the root directory **grow-agric**/
 
 
 ## Resources
