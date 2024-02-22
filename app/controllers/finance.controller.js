@@ -49,7 +49,7 @@ exports.AddFinance = async(req,res) => {
                     const financeLog = {application_uuid:newFinance[1].application_uuid,applicant_name:applicant_name,farmer_uuid:farmer_uuid,next_allowed_application_date:nextDate};
                     await common.logFinanceRequest(financeLog);
                     //-.sms.
-                    //const {status,message} = await sendSMS(phone_number,custom_message); 
+                    const {status,message} = await sendSMS(phone_number,custom_message); 
                     return res.status(201).json({
                         success: true,
                         error: false,

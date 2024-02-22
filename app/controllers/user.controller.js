@@ -203,10 +203,13 @@ exports.modifyUser = async(req,res) => {
     if(Object.keys(req.body).length !== 0) {
         const {email} = req.body;
         const user = await findUserByUUID(user_uuid);
-        const {platform} = await hearAboutPlatform(user.farmer_uuid);
-        console.log("XXXXXXXXXXXXXXXXXXXXXX "+platform);
+        const platform = await hearAboutPlatform(user.farmer_uuid);
         if(user){ 
-            emailValidatationStatus = await validateUserEmail(email);
+            if(email.length > 0){
+                emailValidatationStatus = await validateUserEmail(email);
+            }else{
+                emailValidatationStatus = true;
+            }
             if(emailValidatationStatus){
                 const mUser = await modifyUserDataByUUID(user_uuid,req.body);
                 if(mUser){
@@ -579,9 +582,9 @@ const createUserOtp = async(payload) => {
     const [_obj,created] = await UserOtp.upsert(payload).catch(e => {return false;});
     if(created){
         const text_message = OTP_MESSAGE.replace('{0}',otp);
-        //const {status,message} = await sendSMS(phone_number,text_message);
-        const status=false;
-        //console.log(JSON.stringify({status,message,_obj}));
+        const {status,message} = await sendSMS(phone_number,text_message);
+        //const status=false;
+        console.log(JSON.stringify({status,message,_obj}));
         return [true,'message'];
     }else{
         return [false];

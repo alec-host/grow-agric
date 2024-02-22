@@ -27,7 +27,7 @@ module.exports = (sequelize, Sequelize) => {
         next_allowed_application_date:{
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: 0            
+            defaultValue: new Date('2023-01-01')           
         },                                  
         createdAt:{
             field:'date_created',
